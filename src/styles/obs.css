@@ -205,3 +205,10 @@ table.rt td.k{white-space:nowrap}
 .report .split .in b,.report .split .in span{color:#fff}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .report .split .in b,:root:not([data-theme="light"]) .report .split .in span{color:#0F1424}}
 :root[data-theme="dark"] .report .split .in b,:root[data-theme="dark"] .report .split .in span{color:#0F1424}
+/* الشريط العلوي في الجوال: أسماء مختصرة والتبويبات الخمسة ظاهرة كلها */
+.nav a .short{display:none}
+@media(max-width:600px){
+  .top .nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:2px;overflow:visible}
+  .top .nav a{justify-content:center;padding-inline:2px;font-size:13.5px}
+  .nav a .full{display:none}.nav a .short{display:inline}
+}

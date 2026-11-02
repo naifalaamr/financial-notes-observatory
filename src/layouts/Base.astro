@@ -7,11 +7,11 @@ interface Props { title?: string; description?: string; nav?: 'report' | 'orgs' 
 const { title, description = 'التقرير التجميعي لملاحظات وتوصيات تحليل القوائم المالية للمنظمات غير الربحية — الدفعة 47.', nav = null, kicker = 'مرصد الملاحظات المالية' } = Astro.props;
 const full = title ? `${title} · مرصد الملاحظات المالية` : 'مرصد الملاحظات المالية · الدفعة 47';
 const links = [
-  ['report', '', 'التقرير التجميعي'],
-  ['orgs', 'orgs/', 'ملخصات المنظمات'],
-  ['patterns', 'patterns/', 'أنماط الملاحظات'],
-  ['framework', 'framework/', 'إطار التقييم'],
-  ['method', 'method/', 'المنهجية'],
+  ['report', '', 'التقرير التجميعي', 'التقرير'],
+  ['orgs', 'orgs/', 'ملخصات المنظمات', 'المنظمات'],
+  ['patterns', 'patterns/', 'أنماط الملاحظات', 'الأنماط'],
+  ['framework', 'framework/', 'إطار التقييم', 'الإطار'],
+  ['method', 'method/', 'المنهجية', 'المنهجية'],
 ] as const;
 ---
 <!doctype html>
@@ -74,7 +74,7 @@ const links = [
         </div>
       </slot>
       <nav class="nav" aria-label="أقسام المرصد">
-        {links.map(([k, href, label]) => <a href={withBase(href)} aria-current={nav === k ? 'page' : undefined}>{label}</a>)}
+        {links.map(([k, href, label, short]) => <a href={withBase(href)} aria-current={nav === k ? 'page' : undefined} aria-label={label}><span class="full">{label}</span><span class="short" aria-hidden="true">{short}</span></a>)}
       </nav>
     </div>
   </header>

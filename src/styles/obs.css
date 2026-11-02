@@ -348,3 +348,22 @@ table.rt td.k{white-space:nowrap}
 .pri.m{color:var(--t-gov)}
 @media(max-width:980px){.toc-chips{margin:14px 0 0;padding:2px 0}}
 .pri.c{color:color-mix(in srgb,var(--ok) 80%,var(--ink))}
+/* أقسام قابلة للطي بدل التمرير الطويل */
+details.rsec.acc{padding:0}
+details.rsec.acc>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 22px;min-height:64px;border-radius:14px}
+details.rsec.acc>summary::-webkit-details-marker{display:none}
+details.rsec.acc>summary h2{margin:0}
+details.rsec.acc>summary::after,details.pgroup>summary::after{content:"";flex:none;width:10px;height:10px;border-inline-end:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);margin-top:-4px;transition:transform .2s}
+details[open].rsec.acc>summary::after,details[open].pgroup>summary::after{transform:rotate(-135deg);margin-top:4px}
+details.rsec.acc>summary:hover{background:var(--sunk)}
+details.rsec.acc>.acc-b{padding:0 24px 22px}
+@media(max-width:600px){details.rsec.acc>summary{padding:16px}details.rsec.acc>.acc-b{padding:0 16px 18px}details.rsec.acc>summary h2{font-size:18px}}
+details.pgroup{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin-bottom:12px}
+details.pgroup>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:16px 18px;min-height:60px}
+details.pgroup>summary::-webkit-details-marker{display:none}
+details.pgroup>summary h2{font-size:18px;margin:0;flex:1}
+details.pgroup>summary .cnt{font-size:13px;color:var(--muted);white-space:nowrap}
+details.pgroup>.pgrid{padding:0 14px 14px}
+details.pgroup .pcard{background:var(--bg)}
+.more-wrap .btn.more{min-height:48px;padding:0 24px;border-radius:12px;font-size:15px;font-weight:600}
+@media(prefers-reduced-motion:reduce){details.rsec.acc>summary::after,details.pgroup>summary::after{transition:none}}

@@ -10,8 +10,9 @@ const flags = [
 <Base nav="method" title="المنهجية وحدود البيانات" kicker="" lede="من أين جاءت الأرقام، وكيف صُنفت، وما الذي لا تقوله.">
   <div class="report" style="grid-template-columns:minmax(0,1fr)">
     <div>
-      <section class="rsec">
-        <h2><span class="n">1</span> مصادر البيانات</h2>
+      <details class="rsec acc" open>
+        <summary><h2><span class="n">1</span> مصادر البيانات</h2></summary>
+        <div class="acc-b">
         <ol class="funnel">
           <li><b>52</b><span><strong>ملفاً رفعها الزملاء</strong>43 PDF و7 Word وملف Pages وصورة</span></li>
           <li><b>48</b><span><strong>تحليلاً</strong>بعد استبعاد الملفات المكررة والعرض المكمّل</span></li>
@@ -25,9 +26,11 @@ const flags = [
           <li>زميلة رفعت ملخصاً وعرضاً تفصيلياً للمنظمة نفسها، فاعتُمد الملخص.</li>
           <li>ثلاث منظمات حللها أكثر من زميل (إحداها ثلاث مرات واثنتان مرتين)، فدُمجت تحليلات كل منها في ملخص واحد. الملاحظة التي رصدها أكثر من زميل (19 حالة) بقيت مرة واحدة بالخطورة الأعلى والصياغة الأكثر تفصيلاً، وما انفرد به كل زميل بقي كما هو. الأرقام والدرجة في الملخص المدمج من التحليل الأشمل، ومقارنة التحليلات قبل الدمج في القسم 7 من التقرير.</li>
         </ul>
-      </section>
-      <section class="rsec">
-        <h2><span class="n">2</span> خطوات العمل</h2>
+        </div>
+      </details>
+      <details class="rsec acc">
+        <summary><h2><span class="n">2</span> خطوات العمل</h2></summary>
+        <div class="acc-b">
         <ol>
           <li><b>التحويل إلى نص:</b> استُخرج نص ملفات PDF وWord آلياً، وقُرئت الصورة والملف الممسوح ضوئياً بصرياً صفحةً صفحة.</li>
           <li><b>الاستخراج:</b> سُجلت كل ملاحظة في سجل موحد يضم: المنظمة، ونص الملاحظة مختصراً بأرقامه، وخطورتها كما حددها المعدّ، والتوصية المرتبطة بها. واستُخرجت المؤشرات الرئيسية (الدرجة، الإيرادات، المصروفات، النتيجة، النقد، نسبة البرامج).</li>
@@ -37,33 +40,43 @@ const flags = [
           <li><b>التوصيات العامة:</b> صيغت توصية عامة لكل نمط مستندة إلى توصيات المعدّين، مع أولوية زمنية.</li>
         </ol>
         <p class="note">أُنجز الاستخراج والتصنيف بمساعدة الذكاء الاصطناعي، واعتمد فريق العمل هذه النسخة النهائية (الإصدار 1.0) في 3 نوفمبر 2026. كل ملاحظة تحمل رقماً (مثل f08.3) يحيل إلى ملفها وترتيبها فيه.</p>
-      </section>
-      <section class="rsec">
-        <h2><span class="n">3</span> الخطورة</h2>
+        </div>
+      </details>
+      <details class="rsec acc">
+        <summary><h2><span class="n">3</span> الخطورة</h2></summary>
+        <div class="acc-b">
         <p>اعتُمدت الخطورة كما حددها كل معدّ، ووُحدت المسميات (حرجة = جوهرية). الملاحظات التي لم يصنفها معدّها بقيت «غير مصنفة» ولم يُجتهد في تصنيفها.</p>
         <p>{SEV_ORDER.map((k) => <span class={`sev ${k}`} style="margin-inline-end:6px">{SEV[k].label}: {s[k]}</span>)}</p>
-      </section>
-      <section class="rsec">
-        <h2><span class="n">4</span> المحاور والأنماط</h2>
+        </div>
+      </details>
+      <details class="rsec acc">
+        <summary><h2><span class="n">4</span> المحاور والأنماط</h2></summary>
+        <div class="acc-b">
         <div class="tablewrap"><table class="rt stack2">
           <thead><tr><th>المحور</th><th>الأنماط</th></tr></thead>
           <tbody>{CATS.map((c) => <tr><td class="k"><b>{c.name}</b></td><td>{PATTERNS.filter((p) => p.cat === c.code).map((p, i) => <>{i ? ' · ' : ''}<a href={withBase(`patterns/${p.code}/`)}>{p.name}</a></>)}</td></tr>)}</tbody>
         </table></div>
-      </section>
-      <section class="rsec">
-        <h2><span class="n">5</span> ملفات تحتاج متابعة</h2>
+        </div>
+      </details>
+      <details class="rsec acc">
+        <summary><h2><span class="n">5</span> ملفات تحتاج متابعة</h2></summary>
+        <div class="acc-b">
         <ul class="notes">{flags.map(([a, f]) => <li><span class="chip mono">{codeOf(a)}</span><div><a href={withBase(`orgs/${idOf(a)}/`)}>{a.org}</a><div class="r">{f}</div></div></li>)}</ul>
-      </section>
-      <section class="rsec">
-        <h2><span class="n">6</span> حدود القراءة</h2>
+        </div>
+      </details>
+      <details class="rsec acc">
+        <summary><h2><span class="n">6</span> حدود القراءة</h2></summary>
+        <div class="acc-b">
         <ul>
           <li>تختلف الملخصات في طولها وتفصيلها (من 5 ملاحظات إلى أكثر من 30)، فكثرة الملاحظات قد تعكس عمق التحليل لا ضعف المنظمة.</li>
           <li>درجة مؤشر الأداء المالي محسوبة من كل معدّ بطريقته، وقد نبّه د. علي الفوزان في المحاضرات إلى أن الدرجة التي تحسبها أداة التحليل ليست دقيقة؛ فتُعرض في المرصد كما وردت للاطلاع فقط، ولا تصلح للمقارنة أو الترتيب بين المنظمات.</li>
           <li>حُجبت أسماء الجمعيات وأرقام تسجيلها ومدنها ومسميات مشروعاتها وأوقافها، وتُعرض كل منظمة برقم ملفها ومجالها ومنطقتها الإدارية فقط. ولا يتضمن المرصد أسماء معدّي التحليلات ولا أرقامهم الجامعية.</li>
         </ul>
-      </section>
-      <section class="rsec">
-        <h2><span class="n">7</span> فريق إعداد التقرير التجميعي</h2>
+        </div>
+      </details>
+      <details class="rsec acc">
+        <summary><h2><span class="n">7</span> فريق إعداد التقرير التجميعي</h2></summary>
+        <div class="acc-b">
         <p>بتكليف من د. علي بن سليمان الفوزان، أعدّ التقرير التجميعي فريق من الدفعة 47:</p>
         <ul class="team">
           <li>عمر سالم العتيبي (منسق الفريق)</li>
@@ -75,7 +88,8 @@ const flags = [
           <li>نايفة مسفر الغامدي</li>
         </ul>
         <p class="note">أسماء معدّي الملخصات الفردية لا تظهر في المرصد.</p>
-      </section>
+        </div>
+      </details>
       <p class="dl"><a class="btn primary" href={withBase('data/notes.csv')} download="ملاحظات-التحليل-المالي.csv"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"></path></svg>تنزيل الملاحظات (CSV)</a></p>
       <p class="note" style="text-align:center">الإصدار النهائي المعتمد 1.0 · 3 نوفمبر 2026</p>
     </div>

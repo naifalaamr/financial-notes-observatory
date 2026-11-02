@@ -82,6 +82,13 @@ const links = [
   <main id="main" class="wrap"><slot /></main>
   <footer><div class="wrap">مرصد الملاحظات المالية · الدفعة 47 · ماجستير إدارة الأوقاف والمنظمات غير الربحية — جامعة الباحة · إعداد التقرير التجميعي: عمر سالم العتيبي، نايف سعيد الزهراني، سعيد عبدالله عسيري، نايف عوض الغامدي، عزة سعيد الزهراني، مها سليم القثامي، نايفة مسفر الغامدي · الإصدار النهائي المعتمد 1.0 (3 نوفمبر 2026) · المحتوى مستخلص من ملخصات الزملاء بمساعدة الذكاء الاصطناعي</div></footer>
   <script>
+    // الأقسام القابلة للطي: افتح القسم الذي يشير إليه الرابط
+    const openTarget = (id: string) => { const el = id && document.getElementById(id); if (el instanceof HTMLDetailsElement) el.open = true; };
+    openTarget(decodeURIComponent(location.hash.slice(1)));
+    document.addEventListener('click', (e) => {
+      const a = (e.target as HTMLElement).closest('a[href^="#"]') as HTMLAnchorElement | null;
+      if (a) openTarget(decodeURIComponent(a.hash.slice(1)));
+    });
     const btn = document.getElementById('themeBtn')!;
     const label = { auto: 'تلقائي', light: 'فاتح', dark: 'داكن' } as const;
     let mode = (document.documentElement.dataset.theme as 'light' | 'dark' | undefined) ?? 'auto';

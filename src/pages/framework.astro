@@ -30,25 +30,30 @@ const supRows = FRAME.supporting.map((s) => ({ ...s, list: pats.filter((p) => FR
   <div class="report" style="grid-template-columns:minmax(0,1fr)">
     <div>
       <div class="callout warn" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 9v4M12 17h.01"></path><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg><p><b>اقرأ الدرجة بحذر.</b> نبّه د. علي الفوزان في محاضرات المقرر إلى أن درجة مؤشر الأداء المالي التي تحسبها أداة التحليل ليست دقيقة. لذلك لا يعتمد المرصد على الدرجات في ترتيب المنظمات أو الحكم عليها، ويستخدم الإطار لتصنيف الملاحظات حسب ما تمسه من محاور.</p></div>
-      <section class="rsec">
-        <h2><span class="n">1</span> لماذا هذه المطابقة؟</h2>
+      <details class="rsec acc">
+        <summary><h2><span class="n">1</span> لماذا هذه المطابقة؟</h2></summary>
+        <div class="acc-b">
         <p>صُنفت الملاحظات في المرصد بمحاور وأنماط موضوعية. وهنا يُربط كل نمط بالإطار الذي بُنيت عليه أداة التحليل المعتمدة في المقرر: <b>مؤشر الأداء المالي</b> بمؤشراته الخمسة الموزونة ومعامل رأي المحاسب القانوني، و<b>قائمة الأسئلة التحليلية</b> الثلاثة والثلاثين، و<b>المؤشرات المساندة</b> لدليل 2026 التي تُقرأ بجوار الدرجة ولا تدخلها.</p>
         <p>المطابقة مبنية على تعريفات المراجع نفسها: النمط يُنسب إلى المؤشر الذي يدخل بنده في معادلته (مثل الأموال المقيدة في مقام المؤشر الخامس)، وإلى السؤال الذي يجيب عنه.</p>
         <p class="note">المصدر: {FRAME.source}.</p>
-      </section>
+        </div>
+      </details>
 
-      <section class="rsec">
-        <h2><span class="n">2</span> ما تقيسه الدرجة وما لا تقيسه</h2>
+      <details class="rsec acc" open>
+        <summary><h2><span class="n">2</span> ما تقيسه الدرجة وما لا تقيسه</h2></summary>
+        <div class="acc-b">
         <div class="tiles">
           <div class="tilebox"><div class="big">{pct(share.in, neg.length)}%</div><div class="lbl">ملاحظات تمس أحد المؤشرات الخمسة الموزونة ({share.in})</div></div>
           <div class="tilebox"><div class="big">{pct(share.factor, neg.length)}%</div><div class="lbl">تمس مصداقية القوائم ورأي المراجع ({share.factor})</div></div>
           <div class="tilebox"><div class="big">{pct(share.out, neg.length)}%</div><div class="lbl">خارج معادلة الدرجة كلياً ({share.out})</div></div>
         </div>
         <div class="insight"><b>القراءة:</b> قرابة {pct(share.out, neg.length)}% من الملاحظات تقع في مناطق لا تدخل معادلة مؤشر الأداء المالي أصلاً: جودة السجلات ومطابقة الميزان، وتركز الإيرادات وتوقف مصادرها، والعجز التشغيلي، وتحرير القيود دون مستند. وهذا يفسر لماذا حصلت جمعيات كثيرة على 90 فأكثر مع ملاحظات جوهرية؛ فالدرجة تقيس الكفاءة والتغطية، ولا تقيس جودة الدفاتر واستدامة الإيراد. ولهذا تنص الأداة على قراءة الدرجة بجوار الأسئلة التحليلية والمؤشرات المساندة لا بمعزل عنها.</div>
-      </section>
+        </div>
+      </details>
 
-      <section class="rsec">
-        <h2><span class="n">3</span> المؤشرات الخمسة ومعامل الرأي</h2>
+      <details class="rsec acc">
+        <summary><h2><span class="n">3</span> المؤشرات الخمسة ومعامل الرأي</h2></summary>
+        <div class="acc-b">
         <h3 style="margin-top:0">كيف تُوزن الدرجة</h3>
         <div class="wbar" role="img" aria-label={FRAME.indicators.filter((i) => i.w).map((i) => `${i.name} ${i.w}%`).join('، ')}>{FRAME.indicators.filter((i) => i.w).map((i, k) => <span class={`w${k + 1}`} style={`flex:${i.w}`}>{i.w}%</span>)}</div>
         <ul class="wlegend">{FRAME.indicators.filter((i) => i.w).map((i, k) => <li><i class={`w${k + 1}`}></i>{i.name}</li>)}</ul>
@@ -67,10 +72,12 @@ const supRows = FRAME.supporting.map((s) => ({ ...s, list: pats.filter((p) => FR
               <div class="r">أنماط لا يدخل بندها في أي مؤشر موزون، وتجيب عنها الأسئلة التحليلية · {notesOf(outCodes)} ملاحظة</div>
               <div class="meta">{outside.map((p) => <a class="chip" href={withBase(`patterns/${p.code}/`)}>{p.name} ({p.orgs})</a>)}</div></div></li>
         </ul>
-      </section>
+        </div>
+      </details>
 
-      <section class="rsec">
-        <h2><span class="n">4</span> الأسئلة التحليلية الثلاثة والثلاثون</h2>
+      <details class="rsec acc">
+        <summary><h2><span class="n">4</span> الأسئلة التحليلية الثلاثة والثلاثون</h2></summary>
+        <div class="acc-b">
         <p>لكل سؤال: عدد المنظمات التي رصد محللوها ملاحظة سلبية تتصل به. الأسئلة الأعلى هي التي تكشف أكثر المشكلات انتشاراً بين المنظمات.</p>
         {FRAME.groups.map((g, gi) => (
           <>
@@ -87,15 +94,18 @@ const supRows = FRAME.supporting.map((s) => ({ ...s, list: pats.filter((p) => FR
           </>
         ))}
         <p class="note">«—» يعني أن السؤال لم ترد عليه ملاحظات سلبية في الملخصات (مثل نسب الإيرادات الوصفية)، لا أنه لم يُجب عنه في التحليلات.</p>
-      </section>
+        </div>
+      </details>
 
-      <section class="rsec">
-        <h2><span class="n">5</span> المؤشرات المساندة (دليل 2026 — لا تدخل الدرجة)</h2>
+      <details class="rsec acc">
+        <summary><h2><span class="n">5</span> المؤشرات المساندة (دليل 2026 — لا تدخل الدرجة)</h2></summary>
+        <div class="acc-b">
         <div class="tablewrap"><table class="rt stack2">
           <thead><tr><th>المؤشر المساند</th><th>الأنماط المتصلة به</th><th class="num">المنظمات</th></tr></thead>
           <tbody>{supRows.map((s) => <tr><td class="k"><b>{s.name}</b></td><td>{s.list.map((p, i) => <>{i ? ' · ' : ''}<a href={withBase(`patterns/${p.code}/`)}>{p.name}</a></>)}</td><td class="num" data-l="منظمة">{orgsOf(s.list.map((p) => p.code))}</td></tr>)}</tbody>
         </table></div>
-      </section>
+        </div>
+      </details>
     </div>
   </div>
 </Base>

@@ -63,6 +63,7 @@ const sizes = ['متناهية الصغر', 'صغيرة', 'متوسطة', 'كب�
         ))}
       </div>
       <div class="msg info" id="noRes" hidden>لا توجد نتائج تطابق هذه التصفية.</div>
+      <p class="more-wrap"><button class="btn more" type="button" id="moreBtn">عرض المزيد</button></p>
     </div>
   </div>
   <script>
@@ -70,6 +71,8 @@ const sizes = ['متناهية الصغر', 'صغيرة', 'متوسطة', 'كب�
     const cards = [...document.querySelectorAll<HTMLElement>('[data-card]')];
     const grid = document.getElementById('grid')!;
     const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+    const STEP = 12; let shown = STEP;
+    const moreBtn = document.getElementById('moreBtn') as HTMLButtonElement;
     const run = () => {
       const q = normalizeAr($('q').value).split(' ').filter(Boolean);
       const cat = $('fCat').value, reg = $('fRegion').value, size = $('fSize').value, crit = $('fCrit').checked;
@@ -78,8 +81,10 @@ const sizes = ['متناهية الصغر', 'صغيرة', 'متوسطة', 'كب�
         const d = c.dataset;
         const ok = (!q.length || q.every((t) => d.quick!.includes(t))) && (!cat || d.cats!.split('|').includes(cat)) &&
           (!reg || d.region === reg) && (!size || d.size === size) && (!crit || Number(d.crit) > 0);
-        c.hidden = !ok; if (ok) n++;
+        c.hidden = !ok || n >= shown; if (ok) n++;
       });
+      const left = n - Math.min(n, shown);
+      moreBtn.hidden = left <= 0; moreBtn.textContent = `عرض المزيد (${left})`;
       document.getElementById('resCount')!.textContent = `${n} من ${cards.length}`;
       document.getElementById('noRes')!.hidden = n > 0;
     };
@@ -88,14 +93,17 @@ const sizes = ['متناهية الصغر', 'صغيرة', 'متوسطة', 'كب�
       const val = (c: HTMLElement) => k === 'code' ? c.dataset.code! : k === 'name' ? c.dataset.name! : -Number(c.dataset[k]);
       cards.sort((x, y) => { const a = val(x), b = val(y); return typeof a === 'number' ? a - (b as number) : (a as string).localeCompare(b as string, 'ar'); });
       cards.forEach((c) => grid.appendChild(c));
+      run();
     };
-    ['q', 'fCat', 'fRegion', 'fSize', 'fCrit'].forEach((id) => $(id).addEventListener('input', run));
+    ['q', 'fCat', 'fRegion', 'fSize', 'fCrit'].forEach((id) => $(id).addEventListener('input', () => { shown = STEP; run(); }));
+    moreBtn.addEventListener('click', () => { shown += STEP; run(); });
     $('sort').addEventListener('change', sort);
     const chips = [...document.querySelectorAll<HTMLButtonElement>('.size-chips button')];
     chips.forEach((b) => b.addEventListener('click', () => {
       chips.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-      $('fSize').value = b.dataset.size || ''; run();
+      $('fSize').value = b.dataset.size || ''; shown = STEP; run();
     }));
     $('fSize').addEventListener('change', () => chips.forEach((x) => x.setAttribute('aria-pressed', String((x.dataset.size || '') === $('fSize').value))));
+    run();
   </script>
 </Base>

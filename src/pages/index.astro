@@ -32,6 +32,9 @@ const highLiq = high.filter((a) => notesOf(a.file).some((n) => n.pat === 'L1' ||
 const outShare = pct(issues.filter((n) => scope(n.pat) === 'out').length, issues.length);
 const inShare = pct(issues.filter((n) => scope(n.pat) === 'in').length, issues.length);
 const facShare = 100 - outShare - inShare;
+const inN = issues.filter((n) => scope(n.pat) === 'in').length;
+const outN = issues.filter((n) => scope(n.pat) === 'out').length;
+const facN = issues.length - inN - outN;
 const perA = Math.round(nN / nA);
 const unclassified = pct(sev.u, nN);
 
@@ -53,6 +56,7 @@ const dotO = (v: number) => (0.45 + 0.55 * v / heatMax).toFixed(2);
 // recommendations by priority (patterns seen in ≥5 organisations)
 const recGroups = (['u', 'y', 'm'] as const).map((k) => ({ k, label: PRI[k], list: pats.filter((p) => p.pri === k && p.orgs >= 5) }));
 const toc = [
+  ['summary', 'الخلاصة'],
   ['intro', 'مقدمة: الهدف والنطاق والمنهجية'],
   ['overview', 'الصورة الإجمالية'],
   ['repeat', 'الملاحظات المتكررة'],
@@ -66,18 +70,33 @@ const toc = [
 <Base nav="report" title="التقرير التجميعي">
   <div class="brand home" slot="hero">
     <h1 class="hero-claim">التقرير التجميعي للملاحظات المالية</h1>
-    <p class="report-summary">نصف ما رصده المحللون لا تلتقطه درجة الأداء المالي</p>
-    <p class="hstats">
-      <span><b class="num">{nN}</b> ملاحظة</span>
-      <span><b class="num">{nE}</b> منظمة</span>
-      <span><b class="num">{nA}</b> تحليلاً</span>
-      <span><b class="num">{nP}</b> نمطاً متكرراً</span>
-      <span class="minor"><b class="num">{sev.c}</b> ملاحظة جوهرية</span>
-    </p>
+    <p class="lede">ما رصده زملاء الدفعة 47 في تحليلات القوائم المالية لـ{nE} منظمة أهلية، مصنفاً ومقارناً بإطار التقييم.</p>
   </div>
 
+  <nav class="toc-chips" aria-label="أقسام التقرير">{toc.map(([id, l]) => <a href={`#${id}`}>{l.replace(': الهدف والنطاق والمنهجية', '')}</a>)}</nav>
   <div class="report">
     <div>
+      <section class="rsec summary" id="summary">
+        <h2>نصف ما رصده المحللون لا تلتقطه درجة الأداء المالي</h2>
+        <p>من {issues.length} ملاحظة سلبية، هذا ما تمسه معادلة الدرجة في أداة التحليل:</p>
+        <div class="split big" role="img" aria-label={`${inShare}% تمس المؤشرات الخمسة، ${facShare}% تمس رأي المراجع، ${outShare}% خارج معادلة الدرجة`}>
+          <span class="seg in" style={`flex:${inShare}`}><b>{inShare}%</b></span>
+          <span class="seg fac" style={`flex:${facShare}`}></span>
+          <span class="seg out" style={`flex:${outShare}`}><b>{outShare}%</b></span>
+        </div>
+        <ul class="split-legend">
+          <li><i class="in"></i><span>تمس أحد المؤشرات الخمسة الموزونة</span><b>{inN}</b></li>
+          <li><i class="fac"></i><span>تمس رأي المراجع ({facShare}%)</span><b>{facN}</b></li>
+          <li><i class="out"></i><span>خارج معادلة الدرجة كلياً</span><b>{outN}</b></li>
+        </ul>
+        <p style="margin:0"><a href={withBase('framework/')}>كيف قُسمت الملاحظات على المؤشرات</a></p>
+      </section>
+      <div class="facts4">
+        <div><b>{nE}</b><span>منظمة، لكل منها ملخص</span></div>
+        <div><b>{nN}</b><span>ملاحظة رصدها المحللون (منها {sev.p} إيجابية)</span></div>
+        <div><b>{sev.c}</b><span>ملاحظة جوهرية ({pct(sev.c, issues.length)}% من السلبية)</span></div>
+        <div><b>{nP}</b><span>نمطاً متكرراً في 9 محاور</span></div>
+      </div>
       <section class="rsec" id="intro">
         <h2><span class="n">1</span> مقدمة: الهدف والنطاق والمنهجية</h2>
         <p><b>الهدف:</b> جمع الملاحظات الواردة في تحليلات القوائم المالية التي أعدّها زملاء الدفعة 47 في ملف واحد، وتصنيفها، وقياس تكرارها بين المنظمات، واستخلاص التوصيات العامة وأولوياتها على مستوى المنظمات محل التحليل.</p>
@@ -87,15 +106,8 @@ const toc = [
 
       <section class="rsec" id="overview">
         <h2><span class="n">2</span> الصورة الإجمالية</h2>
-        <div class="split" role="img" aria-label={`${inShare}% تمس المؤشرات الخمسة، ${facShare}% تمس رأي المراجع، ${outShare}% خارج معادلة الدرجة`}>
-      <a href={withBase('framework/')} class="seg in" style={`flex:${inShare}`}><b>{inShare}%</b><span>تمس المؤشرات الخمسة</span></a>
-      <a href={withBase('framework/')} class="seg fac" style={`flex:${facShare}`}><b>{facShare}%</b><span>رأي المراجع</span></a>
-      <a href={withBase('framework/')} class="seg out" style={`flex:${outShare}`}><b>{outShare}%</b><span>خارج معادلة الدرجة</span></a>
-    </div>
         <div class="tiles">
-          <div class="tilebox"><div class="big">{nN}</div><div class="lbl">إجمالي الملاحظات (منها {sev.p} إيجابية)</div></div>
-          <div class="tilebox"><div class="big">{sev.c}</div><div class="lbl">ملاحظة جوهرية ({pct(sev.c, issues.length)}% من الملاحظات السلبية)</div></div>
-          <div class="tilebox"><div class="big">{perA}</div><div class="lbl">ملاحظة في المتوسط لكل تحليل</div></div>
+          <div class="tilebox"><div class="big">{perA}</div><div class="lbl">ملاحظة في المتوسط لكل منظمة</div></div>
           <div class="tilebox"><div class="big">{fmt(Math.round(avgScore * 10) / 10)}</div><div class="lbl">متوسط درجة مؤشر الأداء المالي ({scored.length} منظمة ذُكرت درجتها)</div></div>
         </div>
         <h3>توزيع الملاحظات على المحاور وخطورتها</h3>
@@ -124,8 +136,8 @@ const toc = [
               {pats.slice(0, 20).map((p, i) => (
                 <tr>
                   <td class="num idx">{i + 1}</td>
-                  <td class="pname"><a href={withBase(`patterns/${p.code}/`)}>{p.name}</a></td>
-                  <td class="pcat">{CAT[p.cat]}</td>
+                  <td class="pname"><a href={withBase(`patterns/${p.code}/`)}>{p.name}</a><span class="mshare" aria-hidden="true"><i style={`width:${pct(p.orgs, nE)}%`}></i></span></td>
+                  <td class="pcat">{CAT[p.cat]} <span class={`pri ${p.pri} mpri`}>{PRI[p.pri]}</span></td>
                   <td class="num m1" data-l="منظمة"><b>{p.orgs}</b></td>
                   <td class="num" data-l="من المنظمات">{pct(p.orgs, nE)}%</td>
                   <td class="num" data-l="ملاحظة">{p.n}</td>

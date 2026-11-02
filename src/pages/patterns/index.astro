@@ -7,24 +7,38 @@ const groups = CATS.map((c) => ({ ...c, list: pats.filter((p) => p.cat === c.cod
 ---
 <Base nav="patterns" title="أنماط الملاحظات">
   <div class="brand home" slot="hero">
-    <p style="margin:0 0 2px;font-size:13px">التصنيف الموحد</p>
     <h1>أنماط الملاحظات</h1>
-    <p class="hstats"><span><b class="num">{pats.length}</b> نمطاً</span><span><b class="num">{CATS.length}</b> محاور</span><span class="minor">الرقم الكبير = عدد المنظمات التي ظهر فيها النمط من {ENTITIES.size}</span></p>
+    <p class="lede">{pats.length} نمطاً متكرراً في {CATS.length} محاور، مصنفة بحسب انتشارها بين المنظمات الـ{ENTITIES.size}.</p>
   </div>
-  <div style="padding:22px 0 64px">
+  <div style="padding:20px 0 64px">
+    <div class="tierbar" role="group" aria-label="انتشار النمط">
+      <button type="button" data-tier="" aria-pressed="true">الكل {pats.length}</button>
+      {(['common', 'recurring', 'specific'] as const).map((t) => <button type="button" data-tier={t} aria-pressed="false">{TIER_SHORT[t]} {pats.filter((p) => tierOf(p.orgs) === t).length}</button>)}
+    </div>
+    <p class="tierdesc" id="tierDesc">النمط <b>المشترك</b> ظهر في 15 منظمة فأكثر، و<b>المتكرر</b> في 8 إلى 14، و<b>الخاص</b> في أقل من 8.</p>
+    <div class="prilegend"><span>الأولوية:</span><span class="pri u">{PRI.u}</span><span class="pri y">{PRI.y}</span><span class="pri m">{PRI.m}</span><span class="pri c">{PRI.c}</span></div>
     {groups.map((g) => (
-      <section style={`margin-bottom:26px;--cc:var(${CAT_COLOR[g.code]})`}>
+      <section class="pgroup" style={`margin-bottom:26px;--cc:var(${CAT_COLOR[g.code]})`}>
         <h2 style="font-size:19px;margin-bottom:10px">{g.name}</h2>
         <div class="pgrid">
           {g.list.map((p) => (
-            <a class="pcard" href={withBase(`patterns/${p.code}/`)}>
+            <a class="pcard" href={withBase(`patterns/${p.code}/`)} data-tier={tierOf(p.orgs)}>
               <h3>{p.name}</h3>
-              <div class="k"><span><b>{p.orgs}</b> منظمة ({pct(p.orgs, ENTITIES.size)}%)</span><span><b>{p.n}</b> ملاحظة</span>{p.crit > 0 && <span><b>{p.crit}</b> جوهرية</span>}</div>
-              <div class="row1" style="display:flex;gap:6px;flex-wrap:wrap"><span class={`pri ${p.pri}`}>{PRI[p.pri]}</span><span class="chip" title={TIER[tierOf(p.orgs)]}>{TIER_SHORT[tierOf(p.orgs)]}</span></div>
+              <span class="pshare"><span class="trk" aria-hidden="true"><i style={`width:${pct(p.orgs, ENTITIES.size)}%`}></i></span><b>{pct(p.orgs, ENTITIES.size)}%</b></span>
+              <div class="pfoot"><span class="k"><b>{p.orgs}</b> منظمة · {p.n} ملاحظة{p.crit > 0 && ` · ${p.crit} جوهرية`}</span><span class={`pri ${p.pri}`}>{PRI[p.pri]}</span></div>
             </a>
           ))}
         </div>
       </section>
     ))}
   </div>
+  <script>
+    const btns = [...document.querySelectorAll<HTMLButtonElement>('.tierbar button')];
+    btns.forEach((b) => b.addEventListener('click', () => {
+      btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      const t = b.dataset.tier;
+      document.querySelectorAll<HTMLElement>('.pcard').forEach((c) => { c.hidden = !!t && c.dataset.tier !== t; });
+      document.querySelectorAll<HTMLElement>('.pgroup').forEach((g) => { g.hidden = ![...g.querySelectorAll<HTMLElement>('.pcard')].some((c) => !c.hidden); });
+    }));
+  </script>
 </Base>

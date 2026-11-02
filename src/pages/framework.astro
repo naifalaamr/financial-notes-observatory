@@ -24,16 +24,12 @@ const supRows = FRAME.supporting.map((s) => ({ ...s, list: pats.filter((p) => FR
 ---
 <Base nav="framework" title="الملاحظات في إطار التقييم المعتمد">
   <div class="brand home" slot="hero">
-    <p style="margin:0 0 2px;font-size:13px">مطابقة مع مراجع أداة د. علي الفوزان</p>
     <h1>الملاحظات في إطار التقييم المعتمد</h1>
-    <p class="hstats">
-      <span><b class="num">5</b> مؤشرات موزونة + معامل الرأي</span>
-      <span><b class="num">33</b> سؤالاً تحليلياً</span>
-      <span><b class="num">{pct(share.out, neg.length)}%</b> من الملاحظات خارج ما تقيسه الدرجة</span>
-    </p>
+    <p class="lede">ربط كل ملاحظة بمؤشرات أداة التحليل التي أعدها د. علي الفوزان، لمعرفة ما تقيسه الدرجة وما لا تقيسه.</p>
   </div>
   <div class="report" style="grid-template-columns:minmax(0,1fr)">
     <div>
+      <div class="callout warn" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 9v4M12 17h.01"></path><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg><p><b>اقرأ الدرجة بحذر.</b> نبّه د. علي الفوزان في محاضرات المقرر إلى أن درجة مؤشر الأداء المالي التي تحسبها أداة التحليل ليست دقيقة. لذلك لا يعتمد المرصد على الدرجات في ترتيب المنظمات أو الحكم عليها، ويستخدم الإطار لتصنيف الملاحظات حسب ما تمسه من محاور.</p></div>
       <section class="rsec">
         <h2><span class="n">1</span> لماذا هذه المطابقة؟</h2>
         <p>صُنفت الملاحظات في المرصد بمحاور وأنماط موضوعية. وهنا يُربط كل نمط بالإطار الذي بُنيت عليه أداة التحليل المعتمدة في المقرر: <b>مؤشر الأداء المالي</b> بمؤشراته الخمسة الموزونة ومعامل رأي المحاسب القانوني، و<b>قائمة الأسئلة التحليلية</b> الثلاثة والثلاثين، و<b>المؤشرات المساندة</b> لدليل 2026 التي تُقرأ بجوار الدرجة ولا تدخلها.</p>
@@ -49,17 +45,21 @@ const supRows = FRAME.supporting.map((s) => ({ ...s, list: pats.filter((p) => FR
           <div class="tilebox"><div class="big">{pct(share.out, neg.length)}%</div><div class="lbl">خارج معادلة الدرجة كلياً ({share.out})</div></div>
         </div>
         <div class="insight"><b>القراءة:</b> قرابة {pct(share.out, neg.length)}% من الملاحظات تقع في مناطق لا تدخل معادلة مؤشر الأداء المالي أصلاً: جودة السجلات ومطابقة الميزان، وتركز الإيرادات وتوقف مصادرها، والعجز التشغيلي، وتحرير القيود دون مستند. وهذا يفسر لماذا حصلت جمعيات كثيرة على 90 فأكثر مع ملاحظات جوهرية؛ فالدرجة تقيس الكفاءة والتغطية، ولا تقيس جودة الدفاتر واستدامة الإيراد. ولهذا تنص الأداة على قراءة الدرجة بجوار الأسئلة التحليلية والمؤشرات المساندة لا بمعزل عنها.</div>
-        <div class="insight" style="border-inline-start-color:var(--warn);background:color-mix(in srgb,var(--warn) 10%,var(--surface))"><b>تنبيه على الدرجة نفسها:</b> نبّه د. علي الفوزان في محاضرات المقرر إلى أن درجة مؤشر الأداء المالي التي تحسبها أداة التحليل ليست دقيقة. لذلك لا يعتمد المرصد على الدرجات في ترتيب المنظمات أو الحكم عليها، ويستخدم الإطار هنا لتصنيف الملاحظات حسب ما تمسه من محاور، لا لتقييم الدرجات.</div>
       </section>
 
       <section class="rsec">
         <h2><span class="n">3</span> المؤشرات الخمسة ومعامل الرأي</h2>
-        <p class="note">الرقم الكبير = عدد المنظمات التي رُصدت لديها ملاحظة تمس المؤشر (من {ENTITIES.size}).</p>
+        <h3 style="margin-top:0">كيف تُوزن الدرجة</h3>
+        <div class="wbar" role="img" aria-label={FRAME.indicators.filter((i) => i.w).map((i) => `${i.name} ${i.w}%`).join('، ')}>{FRAME.indicators.filter((i) => i.w).map((i, k) => <span class={`w${k + 1}`} style={`flex:${i.w}`}>{i.w}%</span>)}</div>
+        <ul class="wlegend">{FRAME.indicators.filter((i) => i.w).map((i, k) => <li><i class={`w${k + 1}`}></i>{i.name}</li>)}</ul>
+        <p class="note">ثم تُضرب الدرجة في معامل رأي المراجع: 1 للرأي المطلق، وتُخصم 0.1 لكل تحفظ.</p>
+        <p class="note">الرقم الكبير = عدد المنظمات التي رُصدت لديها ملاحظة تمس المؤشر (من {ENTITIES.size})، والشريط نسبتها.</p>
         <ul class="notes">
           {indRows.map((i) => (
             <li><span class="orgn"><b>{i.orgs}</b>منظمة</span>
               <div><div class="t"><b>{indLabel(i.code)}</b></div>
                 <div class="r"><b>المستهدف:</b> {i.target} · {i.n} ملاحظة</div>
+                <span class="mshare2" aria-hidden="true"><i style={`width:${pct(i.orgs, ENTITIES.size)}%`}></i></span>
                 <div class="meta">{i.list.map((p) => <a class="chip" href={withBase(`patterns/${p.code}/`)}>{p.name} ({p.orgs})</a>)}</div></div></li>
           ))}
           <li><span class="orgn mute"><b>{orgsOf(outCodes)}</b>منظمة</span>

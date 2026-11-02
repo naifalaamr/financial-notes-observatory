@@ -230,3 +230,121 @@ table.rt td.k{white-space:nowrap}
 }
 .hdots i,.hdots-legend i{display:block;width:var(--d);height:var(--d);border-radius:50%;background:var(--bad);opacity:var(--o)}
 .hdots i.z{width:4px;height:4px;background:var(--line);opacity:1}
+
+/* ===== تحسينات الواجهة المعتمدة من لوحة Claude Design (3 نوفمبر 2026) ===== */
+/* الشريط العلوي: ارتفاع طبيعي، وسطر يشرح الصفحة */
+.top>.wrap{height:auto!important;min-height:0!important;grid-template-rows:auto auto;row-gap:18px;padding-block:22px 0}
+@media(max-width:600px){.top>.wrap{padding-top:18px;row-gap:16px}}
+.brand .lede{margin:6px 0 0;font-size:15px;line-height:1.7;color:var(--on-deep-2);max-width:70ch}
+/* زر المظهر: أيقونة دائرية */
+.theme-btn{width:44px;height:44px;padding:0;border-radius:22px;display:grid;place-items:center;flex:none}
+.theme-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:none}
+.theme-btn[data-mode="auto"] .i-auto,.theme-btn:not([data-mode]) .i-auto,.theme-btn[data-mode="light"] .i-light,.theme-btn[data-mode="dark"] .i-dark{display:block}
+/* شرائح أقسام التقرير (حين تختفي القائمة الجانبية) */
+.toc-chips{display:none}
+@media(max-width:980px){
+  .toc-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:14px -16px 0;padding:2px 16px}
+  .toc-chips::-webkit-scrollbar{display:none}
+  .toc-chips a{flex:none;display:flex;align-items:center;min-height:40px;padding:0 14px;border-radius:20px;background:var(--surface);color:var(--ink);text-decoration:none;font-size:14px;font-weight:500;border:1px solid var(--line)}
+  .toc-chips a:first-child{background:var(--deep);border-color:var(--deep);color:var(--on-deep)}
+}
+/* الخلاصة */
+.rsec.summary h2{font-size:22px;line-height:1.45}
+.rsec.summary>p{font-size:15.5px}
+.split.big{height:64px;max-width:none;margin:6px 0 4px;border-radius:12px;display:flex;gap:3px;overflow:hidden}
+.split.big .seg{display:flex;align-items:center;padding:0 14px;min-width:0}
+.split.big .seg b{font-size:24px}
+.split.big .in{background:var(--accent)} .split.big .fac{background:#5A6FB5} .split.big .out{background:var(--brand-green)}
+.split.big .in b{color:#fff} .split.big .out b{color:#1B2550}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .split.big .in b{color:#0F1424}}
+:root[data-theme="dark"] .split.big .in b{color:#0F1424}
+.split-legend{list-style:none;margin:6px 0;padding:0;display:grid;gap:8px;font-size:14.5px}
+.split-legend li{display:flex;align-items:center;gap:10px}
+.split-legend li span{flex:1}
+.split-legend i{width:12px;height:12px;border-radius:3px;flex:none}
+.split-legend i.in{background:var(--accent)} .split-legend i.fac{background:#5A6FB5} .split-legend i.out{background:var(--brand-green)}
+.facts4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;margin:0 0 18px;border-radius:var(--r);overflow:hidden}
+.facts4>div{background:var(--surface);padding:16px;display:flex;flex-direction:column;gap:4px}
+.facts4 b{font-size:28px;line-height:1.1;font-variant-numeric:tabular-nums;font-family:var(--f-display)}
+.facts4 span{font-size:13px;color:var(--muted);line-height:1.5}
+@media(max-width:700px){.facts4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* جدول الأنماط المتكررة في الجوال: شريط انتشار وشارة أولوية */
+.mshare,.mpri{display:none}
+@media(max-width:600px){
+  .rt.stack td.pname .mshare{display:block;height:8px;border-radius:4px;background:var(--line);margin-top:8px;overflow:hidden}
+  .rt.stack td.pname .mshare i{display:block;height:100%;background:var(--accent);border-radius:4px}
+  .rt.stack td.pcat .mpri{display:inline-block;margin-inline-start:6px}
+}
+/* بطاقات المنظمات */
+.card .ohead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.card .ohead .t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.card .ohead h3{font-size:17px}
+.card .ohead .meta{font-size:13px;color:var(--muted);line-height:1.6}
+.card .tot{display:flex;flex-direction:column;align-items:center;min-width:56px;line-height:1.1}
+.card .tot b{font-size:26px;font-family:var(--f-display);font-variant-numeric:tabular-nums}
+.card .tot span{font-size:12.5px;color:var(--muted)}
+.card .ofoot{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--muted);padding:2px 0 4px}
+.card .ofoot b{color:var(--ink)} .card .ofoot b.crit{color:var(--bad)}
+.card .merged{font-size:13px;font-weight:600;color:var(--accent);padding:0 16px 10px}
+.card .body{gap:8px}
+.size-chips{display:none}
+@media(max-width:900px){
+  .size-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-top:4px}
+  .size-chips button{flex:none;min-height:40px;padding:0 14px;border-radius:20px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+  .size-chips button[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:var(--on-deep)}
+  .card .cfoot{display:none}
+}
+/* الأنماط: مفتاح الانتشار وشريط النسبة */
+.tierbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:4px;border-radius:14px;background:var(--sunk);max-width:560px}
+.tierbar button{min-height:44px;border:0;border-radius:10px;background:transparent;color:var(--ink);font:inherit;font-size:14px;font-weight:500;cursor:pointer}
+.tierbar button[aria-pressed="true"]{background:var(--surface);font-weight:700}
+.tierdesc{font-size:14px;color:var(--muted);line-height:1.7;margin:10px 0 6px}
+.tierdesc b{color:var(--ink)}
+.prilegend{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:20px}
+.pcard .pshare{display:flex;align-items:center;gap:10px}
+.pcard .pshare .trk{flex:1;height:8px;border-radius:4px;background:var(--sunk);overflow:hidden}
+.pcard .pshare .trk i{display:block;height:100%;background:var(--accent);border-radius:4px}
+.pcard .pshare b{font-size:15px;min-width:40px;text-align:end;font-variant-numeric:tabular-nums}
+.pcard .pfoot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.pcard .pfoot .k{display:inline;font-size:13px;color:var(--muted)}
+.pcard .pri{font-size:13px;padding:3px 10px}
+.pcard[hidden],.pgroup[hidden]{display:none}
+/* الإطار: تنبيه وأوزان */
+.callout{display:flex;gap:12px;align-items:flex-start;padding:16px;border-radius:var(--r);margin:0 0 16px}
+.callout svg{width:22px;height:22px;flex:none;margin-top:3px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.callout p{margin:0;font-size:15px;line-height:1.75;color:var(--ink)}
+.callout.warn{background:color-mix(in srgb,var(--warn) 13%,var(--surface));color:var(--warn)}
+.wbar{display:flex;gap:2px;height:44px;border-radius:10px;overflow:hidden;margin:6px 0}
+.wbar span{display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:700;color:#fff;min-width:0}
+.wbar .w1,.wlegend .w1{background:var(--accent)} .wbar .w2,.wlegend .w2{background:var(--deep)} .wbar .w3,.wlegend .w3{background:var(--brand-green)} .wbar .w4,.wlegend .w4{background:#5A6FB5} .wbar .w5,.wlegend .w5{background:var(--brand-blue)}
+.wbar .w3{color:#1B2550}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .wbar .w1{color:#0F1424}}
+:root[data-theme="dark"] .wbar .w1{color:#0F1424}
+.wlegend{list-style:none;margin:8px 0;padding:0;display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13.5px}
+.wlegend li{display:flex;align-items:center;gap:6px}
+.wlegend i{width:10px;height:10px;border-radius:3px;flex:none}
+.mshare2{display:block;height:8px;border-radius:4px;background:var(--sunk);margin:8px 0 6px;overflow:hidden;max-width:420px}
+.mshare2 i{display:block;height:100%;background:var(--accent);border-radius:4px}
+/* المنهجية: رحلة البيانات والفريق */
+.funnel{list-style:none;margin:6px 0 14px;padding:0;display:grid;gap:6px}
+.funnel li{display:grid;grid-template-columns:84px minmax(0,1fr);gap:12px;align-items:center;padding:14px 16px;border-radius:12px;background:var(--sunk)}
+.funnel li:nth-child(2){margin-inline-start:8px} .funnel li:nth-child(3){margin-inline-start:16px} .funnel li:nth-child(4){margin-inline-start:24px} .funnel li:nth-child(5){margin-inline-start:32px}
+.funnel b{font-size:30px;line-height:1;color:var(--accent);font-family:var(--f-display);font-variant-numeric:tabular-nums}
+.funnel span{display:flex;flex-direction:column;gap:2px;font-size:13.5px;color:var(--muted);line-height:1.6}
+.funnel strong{font-size:15.5px;color:var(--ink)}
+@media(max-width:600px){.funnel li{grid-template-columns:72px minmax(0,1fr)}.funnel li:nth-child(n){margin-inline-start:0}}
+.team{list-style:none;margin:8px 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:2px;border-radius:var(--r);overflow:hidden}
+.team li{background:var(--sunk);padding:12px 14px;font-size:15px}
+.dl{display:flex;justify-content:center;margin:8px 0}
+.dl .btn{min-height:52px;padding:0 22px;border-radius:12px;font-size:15px;font-weight:600}
+.dl svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.card>.ofoot{padding:4px 16px 14px}
+.card .ohead h3{height:auto;display:block}
+.rail>div:first-child,.rail>.size-chips{grid-column:1/-1}
+@media(max-width:900px){.grid{grid-auto-rows:auto}.grid>.card{contain-intrinsic-size:auto 240px}.card .sum{min-height:0}}
+.split.big .seg{flex-direction:row}
+.split-legend{max-width:460px}
+.pri{background:color-mix(in srgb,currentColor 10%,var(--surface))}
+.pri.m{color:var(--t-gov)}
+@media(max-width:980px){.toc-chips{margin:14px 0 0;padding:2px 0}}
+.pri.c{color:color-mix(in srgb,var(--ok) 80%,var(--ink))}

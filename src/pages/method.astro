@@ -7,11 +7,18 @@ const flags = [
   ...ANALYSES.filter((a) => a.scheme).map((a) => [a, a.scheme] as const),
 ];
 ---
-<Base nav="method" title="المنهجية وحدود البيانات">
+<Base nav="method" title="المنهجية وحدود البيانات" kicker="" lede="من أين جاءت الأرقام، وكيف صُنفت، وما الذي لا تقوله.">
   <div class="report" style="grid-template-columns:minmax(0,1fr)">
     <div>
       <section class="rsec">
         <h2><span class="n">1</span> مصادر البيانات</h2>
+        <ol class="funnel">
+          <li><b>52</b><span><strong>ملفاً رفعها الزملاء</strong>43 PDF و7 Word وملف Pages وصورة</span></li>
+          <li><b>48</b><span><strong>تحليلاً</strong>بعد استبعاد الملفات المكررة والعرض المكمّل</span></li>
+          <li><b>{ANALYSES.length}</b><span><strong>ملخصاً، لكل منظمة واحد</strong>دُمجت تحليلات 3 منظمات حللها أكثر من زميل</span></li>
+          <li><b>{NOTES.length}</b><span><strong>ملاحظة</strong>بعد حذف 19 ملاحظة رصدها زميلان على المنظمة نفسها</span></li>
+          <li><b>{PATTERNS.length - 1}</b><span><strong>نمطاً في {CATS.length} محاور</strong>كل نمط مربوط بمؤشرات إطار التقييم</span></li>
+        </ol>
         <p>52 ملفاً رُفعت عبر نموذج التسليم: 43 PDF و7 Word وملف Pages وصورة. بعد استبعاد المكرر بقي 48 تحليلاً عن <b>{ENTITIES.size} منظمة</b>، دُمجت في <b>{ANALYSES.length} ملخصاً</b>، ملخص واحد لكل منظمة:</p>
         <ul>
           <li>ملفان مرفوعان مرتين بالمحتوى نفسه  فاحتُسب كل منهما مرة واحدة.</li>
@@ -58,8 +65,8 @@ const flags = [
       <section class="rsec">
         <h2><span class="n">7</span> فريق إعداد التقرير التجميعي</h2>
         <p>بتكليف من د. علي بن سليمان الفوزان، أعدّ التقرير التجميعي فريق من الدفعة 47:</p>
-        <ul>
-          <li>عمر سالم العتيبي — منسق الفريق</li>
+        <ul class="team">
+          <li>عمر سالم العتيبي (منسق الفريق)</li>
           <li>نايف سعيد الزهراني</li>
           <li>سعيد عبدالله عسيري</li>
           <li>نايف عوض الغامدي</li>
@@ -69,6 +76,8 @@ const flags = [
         </ul>
         <p class="note">أسماء معدّي الملخصات الفردية لا تظهر في المرصد.</p>
       </section>
+      <p class="dl"><a class="btn primary" href={withBase('data/notes.csv')} download="ملاحظات-التحليل-المالي.csv"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"></path></svg>تنزيل الملاحظات (CSV)</a></p>
+      <p class="note" style="text-align:center">الإصدار النهائي المعتمد 1.0 · 3 نوفمبر 2026</p>
     </div>
   </div>
 </Base>

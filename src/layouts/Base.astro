@@ -3,8 +3,8 @@ import '../styles/global.css';
 import '../styles/obs.css';
 import Mark from '../components/Mark.astro';
 import { withBase } from '../lib/obs';
-interface Props { title?: string; description?: string; nav?: 'report' | 'orgs' | 'patterns' | 'framework' | 'method' | null; kicker?: string }
-const { title, description = 'التقرير التجميعي لملاحظات وتوصيات تحليل القوائم المالية للمنظمات غير الربحية — الدفعة 47.', nav = null, kicker = 'مرصد الملاحظات المالية' } = Astro.props;
+interface Props { title?: string; description?: string; nav?: 'report' | 'orgs' | 'patterns' | 'framework' | 'method' | null; kicker?: string; lede?: string }
+const { title, description = 'التقرير التجميعي لملاحظات وتوصيات تحليل القوائم المالية للمنظمات غير الربحية — الدفعة 47.', nav = null, lede = '', kicker = 'مرصد الملاحظات المالية' } = Astro.props;
 const full = title ? `${title} · مرصد الملاحظات المالية` : 'مرصد الملاحظات المالية · الدفعة 47';
 const links = [
   ['report', '', 'التقرير التجميعي', 'التقرير'],
@@ -56,11 +56,11 @@ const links = [
     <div class="wrap">
       <a class="mark" href={withBase('')} aria-label="مرصد الملاحظات المالية — الرئيسية">
         <Mark />
-        <span class="w"><b>مرصد الملاحظات المالية</b><span>تحليل القوائم المالية للمنظمات غير الربحية · الدفعة 47</span></span>
+        <span class="w"><b>مرصد الملاحظات المالية</b><span>الدفعة 47 · جامعة الباحة</span></span>
       </a>
       <div class="end">
         <span class="meta">مقرر تنمية الموارد المالية · بإشراف د. علي بن سليمان الفوزان</span>
-        <button class="theme-btn" type="button" id="themeBtn">المظهر: تلقائي</button>
+        <button class="theme-btn" type="button" id="themeBtn" aria-label="المظهر: تلقائي" title="المظهر: تلقائي"><svg class="i-auto" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"></path></svg><svg class="i-light" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg><svg class="i-dark" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg></button>
       </div>
     </div>
     <div class="stripe" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -69,8 +69,9 @@ const links = [
     <div class="wrap">
       <slot name="hero">
         <div class="brand">
-          <p style="margin:0 0 2px;font-size:13px">{kicker}</p>
+          {kicker && <p style="margin:0 0 2px;font-size:13px">{kicker}</p>}
           <h1>{title}</h1>
+          {lede && <p class="lede">{lede}</p>}
         </div>
       </slot>
       <nav class="nav" aria-label="أقسام المرصد">
@@ -84,7 +85,7 @@ const links = [
     const btn = document.getElementById('themeBtn')!;
     const label = { auto: 'تلقائي', light: 'فاتح', dark: 'داكن' } as const;
     let mode = (document.documentElement.dataset.theme as 'light' | 'dark' | undefined) ?? 'auto';
-    const paint = () => { btn.textContent = 'المظهر: ' + label[mode]; };
+    const paint = () => { const t = 'المظهر: ' + label[mode]; btn.setAttribute('aria-label', t); btn.title = t; btn.dataset.mode = mode; };
     paint();
     btn.addEventListener('click', () => {
       mode = mode === 'auto' ? 'light' : mode === 'light' ? 'dark' : 'auto';

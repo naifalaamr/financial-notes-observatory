@@ -36,13 +36,10 @@ const perA = Math.round(nN / nA);
 const unclassified = pct(sev.u, nN);
 
 // same organisation, different analysts
-const dupes = [
-  { label: 'المنظمة الأولى: حللها زميلان', files: ['f08', 'f27'] },
-  { label: 'المنظمة الثانية: حللها ثلاثة زملاء', files: ['f05', 'f13', 'f14'] },
-  { label: 'المنظمة الثالثة: حللها زميلان', files: ['f34', 'f40'] },
-];
+const dupes = ANALYSES.filter((a) => a.sources.length > 1);
+const nRaw = ANALYSES.reduce((s, a) => s + Math.max(1, a.sources.length), 0);
 // stand-out specific findings
-const standouts = ['f51.0', 'f01.0', 'f33.0', 'f23.0', 'f49.0', 'f25.0', 'f02.0', 'f40.25'].map((id) => NOTES.find((n) => n.id === id)!).filter(Boolean);
+const standouts = ['f44.0', 'f01.0', 'f30.0', 'f21.0', 'f43.0', 'f23.0', 'f02.0', 'f31.37'].map((id) => NOTES.find((n) => n.id === id)!).filter(Boolean);
 
 // heat: analyses × categories
 const heat = ANALYSES.map((a) => {
@@ -82,7 +79,7 @@ const toc = [
       <section class="rsec" id="intro">
         <h2><span class="n">1</span> مقدمة: الهدف والنطاق والمنهجية</h2>
         <p><b>الهدف:</b> جمع الملاحظات الواردة في تحليلات القوائم المالية التي أعدّها زملاء الدفعة 47 في ملف واحد، وتصنيفها، وقياس تكرارها بين المنظمات، واستخلاص التوصيات العامة وأولوياتها على مستوى المنظمات محل التحليل.</p>
-        <p><b>النطاق:</b> {nA} تحليلاً مستقلاً عن {nE} منظمة أهلية (حللت ثلاث منظمات أكثر من مرة)، أغلبها عن السنتين الماليتين 2024م و2025م، ومصدرها الملخصات التنفيذية المرفوعة عبر نموذج التسليم.</p>
+        <p><b>النطاق:</b> {nE} منظمة أهلية، لكل منها ملخص واحد ({nRaw} تحليلاً رفعها الزملاء، ودُمجت تحليلات {dupes.length} منظمات حللها أكثر من زميل)، أغلبها عن السنتين الماليتين 2024م و2025م، ومصدرها الملخصات التنفيذية المرفوعة عبر نموذج التسليم.</p>
         <p><b>المنهجية باختصار:</b> حُوّلت الملفات كلها إلى نص (وقُرئت الصور والملفات الممسوحة بصرياً)، واستُخرجت كل ملاحظة بخطورتها وتوصيتها كما وردت لدى معدّها، ثم صُنّفت في 9 محاور موضوعية و{nP} نمطاً، وعُدّ تكرار كل نمط بعدد الملاحظات وعدد المنظمات. التفاصيل وحدود البيانات في <a href={withBase('method/')}>صفحة المنهجية</a>.</p>
       </section>
 
@@ -97,7 +94,7 @@ const toc = [
           <div class="tilebox"><div class="big">{nN}</div><div class="lbl">إجمالي الملاحظات (منها {sev.p} إيجابية)</div></div>
           <div class="tilebox"><div class="big">{sev.c}</div><div class="lbl">ملاحظة جوهرية ({pct(sev.c, issues.length)}% من الملاحظات السلبية)</div></div>
           <div class="tilebox"><div class="big">{perA}</div><div class="lbl">ملاحظة في المتوسط لكل تحليل</div></div>
-          <div class="tilebox"><div class="big">{fmt(Math.round(avgScore * 10) / 10)}</div><div class="lbl">متوسط درجة مؤشر الأداء المالي ({scored.length} تحليلاً ذكر الدرجة)</div></div>
+          <div class="tilebox"><div class="big">{fmt(Math.round(avgScore * 10) / 10)}</div><div class="lbl">متوسط درجة مؤشر الأداء المالي ({scored.length} منظمة ذُكرت درجتها)</div></div>
         </div>
         <h3>توزيع الملاحظات على المحاور وخطورتها</h3>
         <div class="legend">{SEV_ORDER.filter((k) => k !== 'p').map((k) => <span><i class={k} style={`background:var(${k === 'c' ? '--bad' : k === 'm' ? '--warn' : k === 'l' ? '--t-gov' : '--line'})`}></i>{SEV[k].label}</span>)}</div>
@@ -142,7 +139,7 @@ const toc = [
       <section class="rsec" id="trends">
         <h2><span class="n">4</span> أبرز الأنماط والاتجاهات</h2>
         <div class="insight"><b>1. الأموال المقيدة هي أكثر ما يتكرر خطراً.</b> رُصدت عليها ملاحظات في {orgsWith('rst')} منظمة من {nE}، أبرزها أرصدة راكدة لم تُصرف ({pats.find((p) => p.code === 'R1')?.orgs} منظمة)، وصرف يتجاوز التمويل أو مناقلة بين المقيد والحر دون قرار ({pats.find((p) => p.code === 'R2')?.orgs})، وزكاة محتجزة أو مختلطة المعالجة ({pats.find((p) => p.code === 'R4')?.orgs}). وأخطر صورها أن يقل النقد عن الأموال المقيدة نفسها، أي أن أموال المتبرعين صُرفت فعلاً في غير غرضها.</div>
-        <div class="insight"><b>2. الدرجة المرتفعة لا تعني سلامة مالية.</b> من {high.length} تحليلاً منح درجة 90 فأعلى في مؤشر الأداء المالي، رصد {highCrit.length} منها ملاحظة جوهرية واحدة على الأقل، ورصد {highLiq.length} منها ضعف سيولة أو عجزاً أو نقداً لا يغطي المقيد. والسبب أن بعض محاور المؤشر تأخذ الدرجة الكاملة عند غياب البيانات، كمصروفات جمع الأموال غير المفصح عنها ({pats.find((p) => p.code === 'X3')?.orgs} منظمة). وبمطابقة الملاحظات مع إطار التقييم المعتمد يتبين أن {outShare}% منها تقع خارج معادلة الدرجة أصلاً (<a href={withBase('framework/')}>التفاصيل</a>). وتُقرأ الدرجات هنا بحذر، إذ نبّه د. علي الفوزان في المحاضرات إلى أن الدرجة التي تحسبها أداة التحليل ليست دقيقة.</div>
+        <div class="insight"><b>2. الدرجة المرتفعة لا تعني سلامة مالية.</b> من {high.length} منظمة نالت درجة 90 فأعلى في مؤشر الأداء المالي، رصد {highCrit.length} منها ملاحظة جوهرية واحدة على الأقل، ورصد {highLiq.length} منها ضعف سيولة أو عجزاً أو نقداً لا يغطي المقيد. والسبب أن بعض محاور المؤشر تأخذ الدرجة الكاملة عند غياب البيانات، كمصروفات جمع الأموال غير المفصح عنها ({pats.find((p) => p.code === 'X3')?.orgs} منظمة). وبمطابقة الملاحظات مع إطار التقييم المعتمد يتبين أن {outShare}% منها تقع خارج معادلة الدرجة أصلاً (<a href={withBase('framework/')}>التفاصيل</a>). وتُقرأ الدرجات هنا بحذر، إذ نبّه د. علي الفوزان في المحاضرات إلى أن الدرجة التي تحسبها أداة التحليل ليست دقيقة.</div>
         <div class="insight"><b>3. السجلات المحاسبية أضعف من القوائم المدققة.</b> رُصدت ملاحظات على ميزان المراجعة ودليل الحسابات في {orgsWith('tb')} منظمة: فروق بين الميزان والقوائم ({pats.find((p) => p.code === 'T1')?.orgs} منظمة)، وموازين قبل الإقفال أو غير متوازنة أو غير متاحة ({pats.find((p) => p.code === 'T3')?.orgs})، ومخالفات للدليل الموحد ({pats.find((p) => p.code === 'T2')?.orgs}). الرأي النظيف للمراجع لا يعني أن الدفاتر الداخلية تطابق ما نُشر.</div>
         <div class="insight"><b>4. أصول وقفية واستثمارية كبيرة بعائد ضئيل.</b> رُصدت ملاحظات على الأوقاف والأصول في {orgsWith('waqf')} منظمة: عقارات وأراضٍ بلا عائد أو بعائد أقل بكثير من المرجع 7.5% ({pats.find((p) => p.code === 'W1')?.orgs} منظمة)، وخلل في تصنيف الأوقاف أو فصلها عن الأموال الحرة ({pats.find((p) => p.code === 'W2')?.orgs})، ومشروعات متوقفة بالملايين ({pats.find((p) => p.code === 'W3')?.orgs}).</div>
         <div class="insight"><b>5. إيرادات مركّزة وقليلة المرونة.</b> رُصدت ملاحظات على الإيرادات في {orgsWith('rev')} منظمة: تركز في مصادر قليلة كمنصة إحسان أو منحة حكومية أو موسم واحد ({pats.find((p) => p.code === 'V1')?.orgs} منظمة)، وإيراد غير مقيد ومتكرر دون 30% ({pats.find((p) => p.code === 'V2')?.orgs})، وتوقف مصدر رئيسي دون بديل ({pats.find((p) => p.code === 'V3')?.orgs}).</div>
@@ -185,24 +182,25 @@ const toc = [
         <p>حللت ثلاث منظمات أكثر من مرة ، والمقارنة بين تحليلاتها تكشف أن النتيجة تتأثر بالمحلل وبالبيانات المتاحة له:</p>
         {dupes.map((d) => (
           <>
-            <h3>{d.label}</h3>
+            <h3><a href={withBase(`orgs/${idOf(d)}/`)}>{d.org}</a>: حللها {d.sources.length === 3 ? 'ثلاثة زملاء' : 'زميلان'}</h3>
             <div class="cmpare">
-              {d.files.map((f, fi) => { const a = byFile[f]; const l = notesOf(f); const s = sevCounts(l); return (
+              {d.sources.map((src, fi) => (
                 <div><b>{['التحليل الأول', 'التحليل الثاني', 'التحليل الثالث'][fi]}</b>
-                  <div class="big">{typeof a.m.score === 'number' ? fmt(a.m.score) : '—'}</div><div class="note">درجة المؤشر</div>
-                  <div class="note">{l.length} ملاحظة · {s.c} جوهرية</div></div>
-              ); })}
+                  <div class="big">{typeof src.score === 'number' ? fmt(src.score) : '—'}</div><div class="note">درجة المؤشر</div>
+                  <div class="note">{src.n} ملاحظة · {src.c} جوهرية</div></div>
+              ))}
             </div>
           </>
         ))}
+        <p class="note">الأعداد أعلاه لكل تحليل قبل الدمج. في الملخص المدمج حُذفت الملاحظات التي رصدها أكثر من زميل وبقيت مرة واحدة.</p>
         <p>ومن أسباب التباين: تصنيف بعض المحللين للخطورة وترك آخرين له، واختلاف معالجة الإهلاك وتوزيع المصروفات عند احتساب الدرجة، وتوفر ميزان المراجعة لبعضهم دون غيرهم. <b>لذلك تُقرأ أعداد الملاحظات مؤشراً على الأنماط لا حكماً نهائياً على كل منظمة</b>، ويُستحسن توحيد قالب الملخص ومنهجية الدرجة في الدفعات القادمة.</p>
       </section>
 
       <section class="rsec" id="map">
         <h2><span class="n">8</span> خريطة الملاحظات</h2>
-        <p class="note">عدد الملاحظات السلبية لكل تحليل في كل محور؛ كلما اشتد اللون زاد العدد. اضغط الاسم لفتح ملخص المنظمة.</p>
+        <p class="note">عدد الملاحظات السلبية لكل منظمة في كل محور؛ كلما اشتد اللون زاد العدد. اضغط الاسم لفتح ملخص المنظمة.</p>
         <div class="tablewrap" style="padding:10px">
-          <div class="heat" role="table" aria-label="عدد الملاحظات لكل تحليل ومحور">
+          <div class="heat" role="table" aria-label="عدد الملاحظات لكل منظمة ومحور">
             <div class="row hd" role="row"><span class="name" role="columnheader">المنظمة</span>{CATS.map((c) => <span role="columnheader" title={c.name}>{CAT_SHORT[c.code]}</span>)}<span role="columnheader">المجموع</span></div>
             {heat.map((h) => (
               <div class="row" role="row">

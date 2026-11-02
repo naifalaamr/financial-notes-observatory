@@ -23,7 +23,6 @@ const facts: [string, string][] = [
 ];
 const idx = ANALYSES.indexOf(a);
 const prev = ANALYSES[idx - 1], next = ANALYSES[idx + 1];
-const siblings = ANALYSES.filter((x) => x !== a && x.entity === a.entity);
 ---
 <Base nav="orgs" title={a.org} kicker="ملخص منظمة">
   <nav class="crumbs" aria-label="المسار"><a href={withBase('orgs/')}>ملخصات المنظمات</a><span>›</span><span>{a.org}</span></nav>
@@ -34,7 +33,7 @@ const siblings = ANALYSES.filter((x) => x !== a && x.entity === a.entity);
     <div class="row1">{SEV_ORDER.map((k) => s[k] ? <span class={`sev ${k}`}>{s[k]} {SEV[k].label}</span> : null)}</div>
     {a.partial && <div class="flag">{a.partial}</div>}
     {a.scheme && <div class="flag">{a.scheme}</div>}
-    {siblings.length > 0 && <p class="note" style="margin:0">للمنظمة نفسها تحليل آخر: {siblings.map((x, i) => <>{i ? '، ' : ''}<a href={withBase(`orgs/${idOf(x)}/`)}>{x.org}</a></>)}</p>}
+    {a.sources.length > 1 && <p class="note" style="margin:0">ملخص مدمج من {a.sources.length === 3 ? 'ثلاثة تحليلات' : 'تحليلين'} أعدّها زملاء مختلفون للمنظمة نفسها: حُذفت الملاحظات المكررة فبقيت كل ملاحظة مرة واحدة، والأرقام والدرجة من التحليل الأشمل.</p>}
   </div>
   <div class="detail">
     <div>

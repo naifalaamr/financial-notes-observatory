@@ -4,6 +4,7 @@ export type Note = { id: string; a: string; e: string; sev: 'c' | 'm' | 'l' | 'p
 export type Analysis = {
   file: string; preparer: string; org: string; named: boolean; size?: string; region?: string; years?: string; about: string; field?: string;
   m: Record<string, number | string>; notes?: Note[]; recs: string[]; partial: string; scheme: string; entity: string;
+  sources: { years: string; score: number | null; n: number; c: number }[];
 };
 export type Pattern = { code: string; cat: string; name: string; rec: string; pri: 'u' | 'y' | 'm' | 'c' };
 

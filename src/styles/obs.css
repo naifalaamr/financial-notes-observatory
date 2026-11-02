@@ -111,7 +111,7 @@ table.rt a{color:var(--ink)}
 @media (max-width:600px){.split .seg{min-width:76px;padding:8px 9px}}
 
 /* taste-skill pass (app-screen rules, brand palette and type kept) */
-:root{--f-mono:var(--f-body);--r:12px}
+:root{--r:12px}
 .mono{font-family:var(--f-body);letter-spacing:0}
 body{font-size:16px}
 .rsec p,.rsec li,.page-head .summary,.lead{max-width:68ch}
@@ -160,3 +160,12 @@ body{font-size:16px}
 .top .nav a{display:flex;align-items:center;padding-block:8px}
 @media(min-width:601px) and (max-width:980px){.top>.wrap{height:264px}}
 @media(max-width:600px){.top>.wrap{height:296px;padding-top:18px}.top .brand h1,.top .brand.home h1,.top .brand.home h1.hero-claim{font-size:22px;line-height:1.4}}
+
+/* معاينة 2026-11-03: شريط علوي بارتفاع ثابت على قدر أطول محتوى (بلا فراغ زائد) */
+.top>.wrap{height:auto;min-height:190px;grid-template-rows:1fr auto;row-gap:16px}
+@media(min-width:601px) and (max-width:980px){.top>.wrap{height:auto;min-height:180px}}
+@media(max-width:600px){.top>.wrap{height:auto;min-height:206px}}
+/* شارات الأنماط الطويلة تلتف بدل أن تخرج عن الشاشة */
+.meta .chip{white-space:normal;max-width:100%;overflow-wrap:anywhere}
+/* زر المظهر في سطر واحد */
+.theme-btn{white-space:nowrap}

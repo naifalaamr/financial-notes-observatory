@@ -1,0 +1,101 @@
+---
+import Base from '../../layouts/Base.astro';
+import { ANALYSES, CATS, CAT, CAT_SHORT, notesOf, sevCounts, withBase, idOf, codeOf, fmt, ENTITIES } from '../../lib/obs';
+import { normalizeAr } from '../../lib/arabic';
+const rows = ANALYSES.map((a) => {
+  const l = notesOf(a.file);
+  const s = sevCounts(l);
+  const neg = l.filter((n) => n.sev !== 'p');
+  const cats = CATS.map((c) => [c.code, neg.filter((n) => n.cat === c.code).length] as const).filter((x) => x[1] > 0).sort((x, y) => y[1] - x[1]);
+  return { a, l, s, neg, cats };
+});
+const regions = [...new Set(ANALYSES.map((a) => (a.region || '').replace(/ \(.*\)/, '')).filter(Boolean))].sort();
+const sizes = ['متناهية الصغر', 'صغيرة', 'متوسطة', 'كبيرة', 'متناهية الكبر'].filter((s) => ANALYSES.some((a) => a.size === s));
+---
+<Base nav="orgs" title="ملخصات المنظمات">
+  <div class="brand home" slot="hero">
+    <p style="margin:0 0 2px;font-size:13px">المخرج الأول: ملخص مستقل لكل منظمة</p>
+    <h1>ملخصات المنظمات</h1>
+    <p class="hstats"><span><b class="num">{ANALYSES.length}</b> تحليلاً</span><span><b class="num">{ENTITIES.size}</b> منظمة</span><span class="minor">أسماء الجمعيات محجوبة، وتُعرض كل منظمة برقم ملفها ومجالها</span></p>
+  </div>
+  <div class="dir" style="padding-bottom:64px">
+    <aside class="rail" id="rail">
+      <div><label for="q">بحث</label><input class="field search" id="q" type="search" placeholder="رقم المنظمة، المجال، ملاحظة…" autocomplete="off" /></div>
+      <div class="grp"><label for="fCat">محور الملاحظات</label>
+        <select class="field" id="fCat"><option value="">كل المحاور</option>{CATS.map((c) => <option value={c.code}>{c.name}</option>)}</select></div>
+      <div class="grp"><label for="fRegion">المنطقة</label>
+        <select class="field" id="fRegion"><option value="">كل المناطق</option>{regions.map((r) => <option value={r}>{r}</option>)}<option value="-">غير مذكورة</option></select></div>
+      <div class="grp"><label for="fSize">فئة الجمعية</label>
+        <select class="field" id="fSize"><option value="">كل الفئات</option>{sizes.map((r) => <option value={r}>{r}</option>)}</select></div>
+      <div class="grp"><label><input type="checkbox" id="fCrit" /> فيها ملاحظات جوهرية فقط</label></div>
+    </aside>
+    <div style="min-width:0">
+      <div class="toolbar">
+        <div class="res" id="resCount" aria-live="polite">{rows.length} من {rows.length}</div>
+        <div class="legend" aria-label="ألوان شريط الخطورة"><span><i style="background:var(--bad)"></i>جوهرية</span><span><i style="background:var(--warn)"></i>متوسطة</span><span><i style="background:var(--t-gov)"></i>منخفضة</span><span><i style="background:color-mix(in srgb,var(--muted) 55%,transparent)"></i>غير مصنّفة</span><span><i style="background:var(--ok)"></i>إيجابية</span></div>
+        <select class="field" id="sort" style="width:auto" aria-label="الترتيب">
+          <option value="code">ترتيب: رقم الملف</option>
+          <option value="notes">ترتيب: عدد الملاحظات</option>
+          <option value="crit">ترتيب: الجوهرية</option>
+          <option value="score">ترتيب: درجة المؤشر</option>
+          <option value="name">ترتيب: الاسم</option>
+        </select>
+      </div>
+      <div class="grid" id="grid">
+        {rows.map(({ a, l, s, neg, cats }) => (
+          <article class="card" data-card data-code={a.file} data-name={a.org} data-notes={neg.length} data-crit={s.c}
+            data-score={typeof a.m.score === 'number' ? a.m.score : -1} data-cats={cats.map((c) => c[0]).join('|')}
+            data-region={(a.region || '-').replace(/ \(.*\)/, '')} data-size={a.size || ''}
+            data-quick={normalizeAr([a.org, a.field, a.region, a.size, a.about, ...l.map((n) => n.t)].join(' '))}>
+            <div class="cband" style="--tc:var(--deep)">
+              <span class="type">{a.field || 'مجال غير محدد'}{a.size ? ` · ${a.size}` : ''}</span>
+              <span class="st">{a.region || 'المنطقة غير مذكورة'}</span>
+            </div>
+            <div class="body">
+              <div class="head"><div class="t">
+                <h3><a class="stretch" href={withBase(`orgs/${idOf(a)}/`)}><span class="nm">{a.org}</span></a></h3>
+                <div class="who">{a.years ? `السنوات ${a.years.split('/').sort().join('–')}` : ''}</div>
+              </div></div>
+              <p class="sum">{a.about}</p>
+              <div class="sevbar" aria-hidden="true">{(['c', 'm', 'l', 'u', 'p'] as const).map((k) => s[k] ? <span class={k} style={`flex:${s[k]}`}></span> : null)}</div>
+            </div>
+            <ul class="kf">
+              <li><span class="l">الملاحظات</span><span class="v num">{neg.length}{s.p ? ` + ${s.p} إيجابية` : ''}</span></li>
+              <li><span class="l">جوهرية</span><span class:list={['v', 'num', !s.c && 'none']}>{s.c || 'لا يوجد'}</span></li>
+              <li><span class="l">درجة المؤشر</span><span class:list={['v', 'num', typeof a.m.score !== 'number' && 'none']}>{typeof a.m.score === 'number' ? fmt(a.m.score) : 'غير مذكورة'}</span></li>
+            </ul>
+            <div class="cfoot"><div class="chips">{cats.slice(0, 3).map(([c, v]) => <span class="chip" title={CAT[c]}>{CAT_SHORT[c]} {v}</span>)}</div></div>
+          </article>
+        ))}
+      </div>
+      <div class="msg info" id="noRes" hidden>لا توجد نتائج تطابق هذه التصفية.</div>
+    </div>
+  </div>
+  <script>
+    import { normalizeAr } from '../../lib/arabic';
+    const cards = [...document.querySelectorAll<HTMLElement>('[data-card]')];
+    const grid = document.getElementById('grid')!;
+    const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+    const run = () => {
+      const q = normalizeAr($('q').value).split(' ').filter(Boolean);
+      const cat = $('fCat').value, reg = $('fRegion').value, size = $('fSize').value, crit = $('fCrit').checked;
+      let n = 0;
+      cards.forEach((c) => {
+        const d = c.dataset;
+        const ok = (!q.length || q.every((t) => d.quick!.includes(t))) && (!cat || d.cats!.split('|').includes(cat)) &&
+          (!reg || d.region === reg) && (!size || d.size === size) && (!crit || Number(d.crit) > 0);
+        c.hidden = !ok; if (ok) n++;
+      });
+      document.getElementById('resCount')!.textContent = `${n} من ${cards.length}`;
+      document.getElementById('noRes')!.hidden = n > 0;
+    };
+    const sort = () => {
+      const k = $('sort').value;
+      const val = (c: HTMLElement) => k === 'code' ? c.dataset.code! : k === 'name' ? c.dataset.name! : -Number(c.dataset[k]);
+      cards.sort((x, y) => { const a = val(x), b = val(y); return typeof a === 'number' ? a - (b as number) : (a as string).localeCompare(b as string, 'ar'); });
+      cards.forEach((c) => grid.appendChild(c));
+    };
+    ['q', 'fCat', 'fRegion', 'fSize', 'fCrit'].forEach((id) => $(id).addEventListener('input', run));
+    $('sort').addEventListener('change', sort);
+  </script>
+</Base>

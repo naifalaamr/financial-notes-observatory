@@ -1,0 +1,47 @@
+---
+import Base from '../../layouts/Base.astro';
+import { FRAME, SUP, indLabel, PATTERNS, CAT, SEV, SEV_ORDER, PRI, patternStats, tierOf, TIER, withBase, idOf, byFile, ENTITIES, pct, NOTES } from '../../lib/obs';
+export function getStaticPaths() { return PATTERNS.map((p) => ({ params: { code: p.code }, props: { code: p.code } })); }
+const { code } = Astro.props;
+const all = patternStats();
+const p = code === 'P'
+  ? { ...PATTERNS.find((x) => x.code === 'P')!, notes: NOTES.filter((n) => n.sev === 'p'), n: 0, orgs: 0, crit: 0, analyses: 0 }
+  : all.find((x) => x.code === code)!;
+const notes = p.notes.slice().sort((a, b) => SEV_ORDER.indexOf(a.sev as never) - SEV_ORDER.indexOf(b.sev as never));
+const orgs = new Set(notes.map((n) => n.e)).size;
+const fw = FRAME.map[code];
+const qText = (n: number) => FRAME.questions.find((q) => q.n === n)!.t;
+const rank = all.findIndex((x) => x.code === code) + 1;
+---
+<Base nav="patterns" title={p.name} kicker={code === 'P' ? 'ممارسات إيجابية' : `نمط · ${CAT[p.cat]}`}>
+  <nav class="crumbs" aria-label="المسار"><a href={withBase('patterns/')}>أنماط الملاحظات</a><span>›</span><span>{p.name}</span></nav>
+  <div class="page-head">
+    <h1>{p.name}</h1>
+    <div class="tiles" style="margin:4px 0">
+      <div class="tilebox"><div class="big">{orgs}</div><div class="lbl">منظمة ({pct(orgs, ENTITIES.size)}% من {ENTITIES.size})</div></div>
+      <div class="tilebox"><div class="big">{notes.length}</div><div class="lbl">ملاحظة</div></div>
+      {code !== 'P' && <div class="tilebox"><div class="big">{p.crit}</div><div class="lbl">مصنفة جوهرية</div></div>}
+      {code !== 'P' && <div class="tilebox"><div class="big">{rank}</div><div class="lbl">ترتيبه بين الأنماط · {TIER[tierOf(orgs)]}</div></div>}
+    </div>
+    {fw && (fw.ind.length || fw.q.length) && (
+      <div class="cmpare" style="margin:0">
+        <div><b>في مؤشر الأداء المالي</b><div class="note" style="margin-top:4px">{fw.ind.length ? fw.ind.map((c) => indLabel(c)).join(' · ') : 'خارج معادلة الدرجة'}</div></div>
+        {fw.q.length > 0 && <div><b>الأسئلة التحليلية</b><div class="note" style="margin-top:4px">{fw.q.map((n) => `${n}. ${qText(n)}`).join(' · ')}</div></div>}
+        {fw.sup.length > 0 && <div><b>المؤشرات المساندة (2026)</b><div class="note" style="margin-top:4px">{fw.sup.map((n) => SUP[n]).join(' · ')}</div></div>}
+      </div>
+    )}
+    <div class="insight" style="margin:0"><b>التوصية العامة</b> <span class={`pri ${p.pri}`}>{PRI[p.pri]}</span><br />{p.rec}</div>
+  </div>
+  <div style="padding:18px 0 64px">
+    <section class="catblock" style="--cc:var(--accent)">
+      <h2><span class="dot"></span>الملاحظات كما وردت في التحليلات</h2>
+      <ul class="notes">
+        {notes.map((n) => (
+          <li><span class={`sev ${n.sev}`}>{SEV[n.sev].label}</span>
+            <div><div class="t">{n.t}</div>{n.r && <div class="r"><b>توصية المعدّ:</b> {n.r}</div>}
+              <div class="meta"><a href={withBase(`orgs/${idOf(byFile[n.a])}/`)}>{byFile[n.a].org}</a></div></div></li>
+        ))}
+      </ul>
+    </section>
+  </div>
+</Base>

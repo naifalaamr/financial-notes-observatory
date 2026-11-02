@@ -1,0 +1,71 @@
+---
+import Base from '../../layouts/Base.astro';
+import { ANALYSES, CATS, CAT, CAT_COLOR, SEV, SEV_ORDER, PAT, notesOf, sevCounts, withBase, idOf, codeOf, fmt, money } from '../../lib/obs';
+export function getStaticPaths() { return ANALYSES.map((a) => ({ params: { id: idOf(a) }, props: { a } })); }
+const { a } = Astro.props;
+const l = notesOf(a.file);
+const s = sevCounts(l);
+const order = (x: string) => SEV_ORDER.indexOf(x as never);
+const groups = [...CATS, { code: 'pos', name: 'ممارسات إيجابية' }].map((c) => ({
+  ...c, list: l.filter((n) => (c.code === 'pos' ? n.sev === 'p' : n.cat === c.code && n.sev !== 'p')).sort((x, y) => order(x.sev) - order(y.sev)),
+})).filter((g) => g.list.length);
+const m = a.m;
+const facts: [string, string][] = [
+  ['درجة مؤشر الأداء المالي', typeof m.score === 'number' ? `${fmt(m.score)} من 100${typeof m.score_prev === 'number' ? ` (السابقة ${fmt(m.score_prev)})` : ''}` : ''],
+  ['إجمالي الإيرادات', money(m.revenue)],
+  ['إجمالي المصروفات', money(m.expenses)],
+  ['نتيجة السنة', typeof m.result === 'number' ? ((m.result as number) < 0 ? 'عجز ' : 'فائض ') + money(Math.abs(m.result as number)) : ''],
+  ['النقد', money(m.cash)],
+  ['نسبة الإنفاق على البرامج', typeof m.programPct === 'number' ? `${fmt(m.programPct)}%` : ''],
+  ['المصروفات الإدارية', typeof m.adminPct === 'number' ? `${fmt(m.adminPct)}%` : ''],
+  ['رأي المراجع', typeof m.audit === 'string' ? m.audit : ''],
+  ['السنوات', a.years || ''],
+];
+const idx = ANALYSES.indexOf(a);
+const prev = ANALYSES[idx - 1], next = ANALYSES[idx + 1];
+const siblings = ANALYSES.filter((x) => x !== a && x.entity === a.entity);
+---
+<Base nav="orgs" title={a.org} kicker="ملخص منظمة">
+  <nav class="crumbs" aria-label="المسار"><a href={withBase('orgs/')}>ملخصات المنظمات</a><span>›</span><span>{a.org}</span></nav>
+  <div class="page-head">
+    <div class="row1">{a.field && <span class="sev u">{a.field}</span>}{a.size && <span class="chip">{a.size}</span>}{a.region && <span class="chip">{a.region}</span>}<span class="chip mono">{codeOf(a)}</span></div>
+    <h1>{a.org}</h1>
+    <p class="summary">{a.about}</p>
+    <div class="row1">{SEV_ORDER.map((k) => s[k] ? <span class={`sev ${k}`}>{s[k]} {SEV[k].label}</span> : null)}</div>
+    {a.partial && <div class="flag">{a.partial}</div>}
+    {a.scheme && <div class="flag">{a.scheme}</div>}
+    {siblings.length > 0 && <p class="note" style="margin:0">للمنظمة نفسها تحليل آخر: {siblings.map((x, i) => <>{i ? '، ' : ''}<a href={withBase(`orgs/${idOf(x)}/`)}>{x.org}</a></>)}</p>}
+  </div>
+  <div class="detail">
+    <div>
+      {groups.map((g) => (
+        <section class="catblock" id={g.code} style={`--cc:var(${CAT_COLOR[g.code]})`}>
+          <h2><span class="dot"></span>{g.name} <span class="note">({g.list.length})</span></h2>
+          <ul class="notes">
+            {g.list.map((n) => (
+              <li><span class={`sev ${n.sev}`}>{SEV[n.sev].label}</span>
+                <div><div class="t">{n.t}</div>
+                  {n.r && <div class="r"><b>التوصية:</b> {n.r}</div>}
+                  {n.pat !== 'P' && <div class="meta"><a href={withBase(`patterns/${n.pat}/`)}>النمط: {PAT[n.pat].name}</a></div>}
+                </div></li>
+            ))}
+          </ul>
+        </section>
+      ))}
+      {a.recs.length > 0 && (
+        <section class="catblock" style="--cc:var(--accent)"><h2><span class="dot"></span>توصيات عامة إضافية</h2>
+          <ul class="notes">{a.recs.map((r) => <li><span class="pri m">توصية</span><div class="t">{r}</div></li>)}</ul></section>
+      )}
+      <div class="pager">
+        {prev ? <a class="btn" href={withBase(`orgs/${idOf(prev)}/`)}>→ {prev.org}</a> : <span></span>}
+        {next ? <a class="btn" href={withBase(`orgs/${idOf(next)}/`)}>{next.org} ←</a> : <span></span>}
+      </div>
+    </div>
+    <aside class="side">
+      <dl class="facts">{facts.filter(([, v]) => v).map(([k, v]) => <div><dt>{k}</dt><dd class="num">{v}</dd></div>)}</dl>
+      <div class="panel"><b style="font-family:var(--f-display)">المحاور</b>
+        <ul class="toc" style="margin-top:6px">{groups.map((g) => <li><a href={`#${g.code}`}>{g.name} ({g.list.length})</a></li>)}</ul>
+        <p class="note" style="margin:10px 0 0;font-size:12px">النصوص مختصرة من ملخص المعدّ، والأرقام كما وردت فيه.</p></div>
+    </aside>
+  </div>
+</Base>

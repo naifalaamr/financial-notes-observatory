@@ -1,0 +1,101 @@
+---
+import Base from '../layouts/Base.astro';
+import { FRAME, IND, SUP, indLabel, scope, patternStats, NOTES, ENTITIES, withBase, pct, CAT } from '../lib/obs';
+const pats = patternStats().filter((p) => p.n > 0);
+const neg = NOTES.filter((n) => n.sev !== 'p');
+const orgsOf = (codes: string[]) => new Set(neg.filter((n) => codes.includes(n.pat)).map((n) => n.e)).size;
+const notesOf = (codes: string[]) => neg.filter((n) => codes.includes(n.pat)).length;
+const indRows = FRAME.indicators.map((i) => {
+  const list = pats.filter((p) => FRAME.map[p.code]?.ind.includes(i.code));
+  const codes = list.map((p) => p.code);
+  return { ...i, list, orgs: orgsOf(codes), n: notesOf(codes) };
+});
+const outside = pats.filter((p) => scope(p.code) === 'out');
+const outCodes = outside.map((p) => p.code);
+const share = { in: 0, factor: 0, out: 0 } as Record<string, number>;
+neg.forEach((n) => share[scope(n.pat)]++);
+const qRows = FRAME.questions.map((q) => {
+  const list = pats.filter((p) => FRAME.map[p.code]?.q.includes(q.n));
+  const codes = list.map((p) => p.code);
+  return { ...q, list, orgs: orgsOf(codes), cnt: notesOf(codes) };
+});
+const maxQ = Math.max(...qRows.map((q) => q.orgs));
+const supRows = FRAME.supporting.map((s) => ({ ...s, list: pats.filter((p) => FRAME.map[p.code]?.sup.includes(s.n)) })).filter((s) => s.list.length);
+---
+<Base nav="framework" title="الملاحظات في إطار التقييم المعتمد">
+  <div class="brand home" slot="hero">
+    <p style="margin:0 0 2px;font-size:13px">مطابقة مع مراجع أداة د. علي الفوزان</p>
+    <h1>الملاحظات في إطار التقييم المعتمد</h1>
+    <p class="hstats">
+      <span><b class="num">5</b> مؤشرات موزونة + معامل الرأي</span>
+      <span><b class="num">33</b> سؤالاً تحليلياً</span>
+      <span><b class="num">{pct(share.out, neg.length)}%</b> من الملاحظات خارج ما تقيسه الدرجة</span>
+    </p>
+  </div>
+  <div class="report" style="grid-template-columns:minmax(0,1fr)">
+    <div>
+      <section class="rsec">
+        <h2><span class="n">1</span> لماذا هذه المطابقة؟</h2>
+        <p>صُنفت الملاحظات في المرصد بمحاور وأنماط موضوعية. وهنا يُربط كل نمط بالإطار الذي بُنيت عليه أداة التحليل المعتمدة في المقرر: <b>مؤشر الأداء المالي</b> بمؤشراته الخمسة الموزونة ومعامل رأي المحاسب القانوني، و<b>قائمة الأسئلة التحليلية</b> الثلاثة والثلاثين، و<b>المؤشرات المساندة</b> لدليل 2026 التي تُقرأ بجوار الدرجة ولا تدخلها.</p>
+        <p>المطابقة مبنية على تعريفات المراجع نفسها: النمط يُنسب إلى المؤشر الذي يدخل بنده في معادلته (مثل الأموال المقيدة في مقام المؤشر الخامس)، وإلى السؤال الذي يجيب عنه.</p>
+        <p class="note">المصدر: {FRAME.source}.</p>
+      </section>
+
+      <section class="rsec">
+        <h2><span class="n">2</span> ما تقيسه الدرجة وما لا تقيسه</h2>
+        <div class="tiles">
+          <div class="tilebox"><div class="big">{pct(share.in, neg.length)}%</div><div class="lbl">ملاحظات تمس أحد المؤشرات الخمسة الموزونة ({share.in})</div></div>
+          <div class="tilebox"><div class="big">{pct(share.factor, neg.length)}%</div><div class="lbl">تمس مصداقية القوائم ورأي المراجع ({share.factor})</div></div>
+          <div class="tilebox"><div class="big">{pct(share.out, neg.length)}%</div><div class="lbl">خارج معادلة الدرجة كلياً ({share.out})</div></div>
+        </div>
+        <div class="insight"><b>القراءة:</b> قرابة {pct(share.out, neg.length)}% من الملاحظات تقع في مناطق لا تدخل معادلة مؤشر الأداء المالي أصلاً: جودة السجلات ومطابقة الميزان، وتركز الإيرادات وتوقف مصادرها، والعجز التشغيلي، وتحرير القيود دون مستند. وهذا يفسر لماذا حصلت جمعيات كثيرة على 90 فأكثر مع ملاحظات جوهرية؛ فالدرجة تقيس الكفاءة والتغطية، ولا تقيس جودة الدفاتر واستدامة الإيراد. ولهذا تنص الأداة على قراءة الدرجة بجوار الأسئلة التحليلية والمؤشرات المساندة لا بمعزل عنها.</div>
+        <div class="insight" style="border-inline-start-color:var(--warn);background:color-mix(in srgb,var(--warn) 10%,var(--surface))"><b>تنبيه على الدرجة نفسها:</b> نبّه د. علي الفوزان في محاضرات المقرر إلى أن درجة مؤشر الأداء المالي التي تحسبها أداة التحليل ليست دقيقة. لذلك لا يعتمد المرصد على الدرجات في ترتيب المنظمات أو الحكم عليها، ويستخدم الإطار هنا لتصنيف الملاحظات حسب ما تمسه من محاور، لا لتقييم الدرجات.</div>
+      </section>
+
+      <section class="rsec">
+        <h2><span class="n">3</span> المؤشرات الخمسة ومعامل الرأي</h2>
+        <p class="note">الرقم الكبير = عدد المنظمات التي رُصدت لديها ملاحظة تمس المؤشر (من {ENTITIES.size}).</p>
+        <ul class="notes">
+          {indRows.map((i) => (
+            <li><span class="orgn"><b>{i.orgs}</b>منظمة</span>
+              <div><div class="t"><b>{indLabel(i.code)}</b></div>
+                <div class="r"><b>المستهدف:</b> {i.target} · {i.n} ملاحظة</div>
+                <div class="meta">{i.list.map((p) => <a class="chip" href={withBase(`patterns/${p.code}/`)}>{p.name} ({p.orgs})</a>)}</div></div></li>
+          ))}
+          <li><span class="orgn mute"><b>{orgsOf(outCodes)}</b>منظمة</span>
+            <div><div class="t"><b>خارج معادلة الدرجة</b></div>
+              <div class="r">أنماط لا يدخل بندها في أي مؤشر موزون، وتجيب عنها الأسئلة التحليلية · {notesOf(outCodes)} ملاحظة</div>
+              <div class="meta">{outside.map((p) => <a class="chip" href={withBase(`patterns/${p.code}/`)}>{p.name} ({p.orgs})</a>)}</div></div></li>
+        </ul>
+      </section>
+
+      <section class="rsec">
+        <h2><span class="n">4</span> الأسئلة التحليلية الثلاثة والثلاثون</h2>
+        <p>لكل سؤال: عدد المنظمات التي رصد محللوها ملاحظة سلبية تتصل به. الأسئلة الأعلى هي التي تكشف أكثر المشكلات انتشاراً بين المنظمات.</p>
+        {FRAME.groups.map((g, gi) => (
+          <>
+            <h3>{['أولاً', 'ثانياً', 'ثالثاً', 'رابعاً', 'خامساً', 'سادساً'][gi]}: {g}</h3>
+            <div class="hbars">
+              {qRows.filter((q) => q.g === gi + 1).map((q) => (
+                <div class="hbar" title={q.list.map((p) => p.name).join(' · ')}>
+                  <span>س{q.n}: {q.t}</span>
+                  <span class="track" style={`width:${Math.max(q.orgs ? 3 : 0, (q.orgs / maxQ) * 100)}%`}><span class="f" style="width:100%"></span></span>
+                  <span class="v">{q.orgs || '—'}</span>
+                </div>
+              ))}
+            </div>
+          </>
+        ))}
+        <p class="note">«—» يعني أن السؤال لم ترد عليه ملاحظات سلبية في الملخصات (مثل نسب الإيرادات الوصفية)، لا أنه لم يُجب عنه في التحليلات.</p>
+      </section>
+
+      <section class="rsec">
+        <h2><span class="n">5</span> المؤشرات المساندة (دليل 2026 — لا تدخل الدرجة)</h2>
+        <div class="tablewrap"><table class="rt">
+          <thead><tr><th>المؤشر المساند</th><th>الأنماط المتصلة به</th><th class="num">المنظمات</th></tr></thead>
+          <tbody>{supRows.map((s) => <tr><td style="white-space:nowrap"><b>{s.name}</b></td><td>{s.list.map((p, i) => <>{i ? ' · ' : ''}<a href={withBase(`patterns/${p.code}/`)}>{p.name}</a></>)}</td><td class="num">{orgsOf(s.list.map((p) => p.code))}</td></tr>)}</tbody>
+        </table></div>
+      </section>
+    </div>
+  </div>
+</Base>

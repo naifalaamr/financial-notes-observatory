@@ -47,6 +47,8 @@ const heat = ANALYSES.map((a) => {
   return { a, cells: CATS.map((c) => l.filter((n) => n.cat === c.code).length), tot: l.length };
 }).sort((x, y) => y.tot - x.tot);
 const heatMax = Math.max(...heat.flatMap((h) => h.cells));
+const dot = (v: number) => (v ? Math.round(6 + 18 * Math.sqrt(v / heatMax)) : 0);
+const dotO = (v: number) => (0.45 + 0.55 * v / heatMax).toFixed(2);
 
 // recommendations by priority (patterns seen in ≥5 organisations)
 const recGroups = (['u', 'y', 'm'] as const).map((k) => ({ k, label: PRI[k], list: pats.filter((p) => p.pri === k && p.orgs >= 5) }));
@@ -198,8 +200,19 @@ const toc = [
 
       <section class="rsec" id="map">
         <h2><span class="n">8</span> خريطة الملاحظات</h2>
-        <p class="note">عدد الملاحظات السلبية لكل منظمة في كل محور؛ كلما اشتد اللون زاد العدد. اضغط الاسم لفتح ملخص المنظمة.</p>
-        <div class="tablewrap" style="padding:10px">
+        <p class="note heat-note">عدد الملاحظات السلبية لكل منظمة في كل محور؛ كلما اشتد اللون زاد العدد. اضغط الاسم لفتح ملخص المنظمة.</p>
+        <p class="note hdots-note">كل صف منظمة وكل عمود محور، والدائرة أكبر كلما زادت الملاحظات. اضغط الاسم لفتح ملخص المنظمة.</p>
+        <div class="hdots-legend" aria-hidden="true"><span>حجم الدائرة = عدد الملاحظات</span>{[1, 5, 12].map((v) => <span class="k"><i style={`--d:${dot(v)}px;--o:${dotO(v)}`}></i>{v}</span>)}</div>
+        <div class="hdots" role="table" aria-label="عدد الملاحظات لكل منظمة ومحور">
+          <div class="r hd" role="row"><span class="nm" role="columnheader">المنظمة</span>{CATS.map((c) => <span role="columnheader" title={c.name}><span class="v">{CAT_SHORT[c.code]}</span></span>)}</div>
+          {heat.map((h) => (
+            <div class="r" role="row">
+              <a class="nm" role="cell" href={withBase(`orgs/${idOf(h.a)}/`)}>{h.a.org}</a>
+              {h.cells.map((v, ci) => <span role="cell" aria-label={`${CAT_SHORT[CATS[ci].code]}: ${v}`}>{v ? <i style={`--d:${dot(v)}px;--o:${dotO(v)}`}></i> : <i class="z"></i>}</span>)}
+            </div>
+          ))}
+        </div>
+        <div class="tablewrap heat-wrap" style="padding:10px">
           <div class="heat" role="table" aria-label="عدد الملاحظات لكل منظمة ومحور">
             <div class="row hd" role="row"><span class="name" role="columnheader">المنظمة</span>{CATS.map((c) => <span role="columnheader" title={c.name}>{CAT_SHORT[c.code]}</span>)}<span role="columnheader">المجموع</span></div>
             {heat.map((h) => (

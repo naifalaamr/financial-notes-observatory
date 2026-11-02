@@ -212,3 +212,21 @@ table.rt td.k{white-space:nowrap}
   .top .nav a{justify-content:center;padding-inline:2px;font-size:13.5px}
   .nav a .full{display:none}.nav a .short{display:inline}
 }
+/* خريطة الملاحظات في الجوال: مصفوفة نقاط (النمط ب) */
+.hdots,.hdots-note,.hdots-legend{display:none}
+@media(max-width:600px){
+  .heat-wrap,.heat-note{display:none}
+  .hdots-note{display:block}
+  .hdots-legend{display:flex;align-items:center;gap:14px;font-size:13px;color:var(--muted);margin:4px 0 10px}
+  .hdots-legend .k{display:flex;align-items:center;gap:5px}
+  .hdots{display:block;background:var(--surface);border-radius:var(--r);overflow:hidden;padding-bottom:4px}
+  .hdots .r{display:grid;grid-template-columns:70px repeat(9,minmax(0,1fr));align-items:center;padding-inline-start:8px}
+  .hdots .r:nth-child(odd):not(.hd){background:var(--sunk)}
+  .hdots .r.hd>span{height:112px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;overflow:visible}
+  .hdots .hd .v{writing-mode:vertical-rl;transform:rotate(180deg);font-size:12px;color:var(--muted);white-space:nowrap}
+  .hdots .hd .nm{justify-content:flex-start;font-size:12px;color:var(--muted)}
+  .hdots .nm{font-size:12.5px;white-space:nowrap;color:var(--ink);text-decoration:none;min-height:34px;display:flex;align-items:center}
+  .hdots .r>span{height:34px;display:flex;align-items:center;justify-content:center}
+}
+.hdots i,.hdots-legend i{display:block;width:var(--d);height:var(--d);border-radius:50%;background:var(--bad);opacity:var(--o)}
+.hdots i.z{width:4px;height:4px;background:var(--line);opacity:1}

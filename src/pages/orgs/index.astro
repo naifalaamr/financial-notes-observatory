@@ -47,7 +47,7 @@ const sizes = ['متناهية الصغر', 'صغيرة', 'متوسطة', 'كب�
             data-score={typeof a.m.score === 'number' ? a.m.score : -1} data-cats={cats.map((c) => c[0]).join('|')}
             data-region={(a.region || '-').replace(/ \(.*\)/, '')} data-size={a.size || ''}
             data-quick={normalizeAr([a.org, a.field, a.region, a.size, a.about, ...l.map((n) => n.t)].join(' '))}>
-            <div class="cband" style="--tc:var(--deep)">
+            <div class="cband" style="--tc:var(--ink)">
               <span class="type">{a.field || 'مجال غير محدد'}{a.size ? ` · ${a.size}` : ''}</span>
               <span class="st">{a.region || 'المنطقة غير مذكورة'}</span>
             </div>

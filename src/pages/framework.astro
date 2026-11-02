@@ -91,9 +91,9 @@ const supRows = FRAME.supporting.map((s) => ({ ...s, list: pats.filter((p) => FR
 
       <section class="rsec">
         <h2><span class="n">5</span> المؤشرات المساندة (دليل 2026 — لا تدخل الدرجة)</h2>
-        <div class="tablewrap"><table class="rt">
+        <div class="tablewrap"><table class="rt stack2">
           <thead><tr><th>المؤشر المساند</th><th>الأنماط المتصلة به</th><th class="num">المنظمات</th></tr></thead>
-          <tbody>{supRows.map((s) => <tr><td style="white-space:nowrap"><b>{s.name}</b></td><td>{s.list.map((p, i) => <>{i ? ' · ' : ''}<a href={withBase(`patterns/${p.code}/`)}>{p.name}</a></>)}</td><td class="num">{orgsOf(s.list.map((p) => p.code))}</td></tr>)}</tbody>
+          <tbody>{supRows.map((s) => <tr><td class="k"><b>{s.name}</b></td><td>{s.list.map((p, i) => <>{i ? ' · ' : ''}<a href={withBase(`patterns/${p.code}/`)}>{p.name}</a></>)}</td><td class="num" data-l="منظمة">{orgsOf(s.list.map((p) => p.code))}</td></tr>)}</tbody>
         </table></div>
       </section>
     </div>

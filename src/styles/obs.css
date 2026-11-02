@@ -169,3 +169,39 @@ body{font-size:16px}
 .meta .chip{white-space:normal;max-width:100%;overflow-wrap:anywhere}
 /* زر المظهر في سطر واحد */
 .theme-btn{white-space:nowrap}
+
+/* جداول التقرير على الجوال (معاينة 2026-11-03) */
+table.rt td.pcat{white-space:nowrap;color:var(--muted)}
+table.rt td.k{white-space:nowrap}
+@media(max-width:600px){
+  table.rt.stack,table.rt.stack2{min-width:0;width:100%}
+  .rt.stack thead,.rt.stack2 thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .rt.stack tr,.rt.stack2 tr{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;padding:12px 14px}
+  .rt.stack tbody tr:nth-child(even),.rt.stack2 tbody tr:nth-child(even){background:var(--sunk)}
+  .rt.stack td,.rt.stack2 td{display:block;border:0;padding:0;white-space:normal}
+  .rt.stack td.idx{width:22px;flex:none;color:var(--muted);text-align:start}
+  .rt.stack td.pname{flex:1 1 calc(100% - 40px);font-weight:600;line-height:1.5}
+  .rt.stack td.pcat{flex-basis:100%;padding-inline-start:36px;white-space:normal;font-size:13px}
+  .rt.stack td.num[data-l]{font-size:13px;color:var(--muted)}
+  .rt.stack td.num[data-l]::after,.rt.stack2 td.num[data-l]::after{content:" " attr(data-l)}
+  .rt.stack td.num[data-l] b,.rt.stack td.m1{color:var(--ink)}
+  .rt.stack td.m1{margin-inline-start:36px}
+  .rt.stack2 td{flex-basis:100%;text-align:start}
+  .rt.stack2 td.k{white-space:normal;font-size:15px}
+  .rt.stack2 td.num{color:var(--muted);font-size:13px}
+  /* خريطة الملاحظات: عمود المنظمة ثابت أثناء التمرير الأفقي */
+  .heat{min-width:0;width:max-content}
+  .heat .row{grid-template-columns:88px repeat(9,40px) 40px}
+  .heat .row .name{position:sticky;inset-inline-start:-10px;z-index:1;background:var(--surface);font-size:12.5px;padding-inline:12px 6px;margin-inline-start:-10px}
+  .heat .hd>*{font-size:11px}
+}
+@media(max-width:600px){
+  .rt.stack2 td.num{text-align:start}
+  .cmpare{grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:6px}
+  .cmpare>div{padding:10px;font-size:12.5px}
+  .cmpare .big{font-size:20px}
+}
+/* تباين شريحة «تمس المؤشرات الخمسة»: نص أبيض على الأزرق الداكن في الوضع الفاتح، وداكن على الأزرق الفاتح في الداكن */
+.report .split .in b,.report .split .in span{color:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .report .split .in b,:root:not([data-theme="light"]) .report .split .in span{color:#0F1424}}
+:root[data-theme="dark"] .report .split .in b,:root[data-theme="dark"] .report .split .in span{color:#0F1424}

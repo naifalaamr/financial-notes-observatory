@@ -116,18 +116,18 @@ const toc = [
         <h2><span class="n">3</span> الملاحظات المتكررة</h2>
         <p>العمود الأهم هو <b>عدد المنظمات</b>: يبين في كم منظمة ظهر النمط، ولا يتأثر بتكراره داخل المنظمة الواحدة. تشكل الأنماط العشرة الأولى {topShare}% من الملاحظات السلبية كلها.</p>
         <div class="tablewrap">
-          <table class="rt">
+          <table class="rt stack">
             <thead><tr><th>#</th><th>النمط</th><th>المحور</th><th class="num">المنظمات</th><th class="num">النسبة</th><th class="num">الملاحظات</th><th class="num">جوهرية</th></tr></thead>
             <tbody>
               {pats.slice(0, 20).map((p, i) => (
                 <tr>
-                  <td class="num">{i + 1}</td>
-                  <td><a href={withBase(`patterns/${p.code}/`)}>{p.name}</a></td>
-                  <td style="white-space:nowrap;color:var(--muted)">{CAT[p.cat]}</td>
-                  <td class="num"><b>{p.orgs}</b></td>
-                  <td class="num">{pct(p.orgs, nE)}%</td>
-                  <td class="num">{p.n}</td>
-                  <td class="num">{p.crit || '—'}</td>
+                  <td class="num idx">{i + 1}</td>
+                  <td class="pname"><a href={withBase(`patterns/${p.code}/`)}>{p.name}</a></td>
+                  <td class="pcat">{CAT[p.cat]}</td>
+                  <td class="num m1" data-l="منظمة"><b>{p.orgs}</b></td>
+                  <td class="num" data-l="من المنظمات">{pct(p.orgs, nE)}%</td>
+                  <td class="num" data-l="ملاحظة">{p.n}</td>
+                  <td class="num" data-l="جوهرية">{p.crit || '—'}</td>
                 </tr>
               ))}
             </tbody>
@@ -179,7 +179,7 @@ const toc = [
 
       <section class="rsec" id="quality">
         <h2><span class="n">7</span> ملاحظة على جودة التحليلات</h2>
-        <p>حللت ثلاث منظمات أكثر من مرة ، والمقارنة بين تحليلاتها تكشف أن النتيجة تتأثر بالمحلل وبالبيانات المتاحة له:</p>
+        <p>حللت ثلاث منظمات أكثر من مرة، والمقارنة بين تحليلاتها تكشف أن النتيجة تتأثر بالمحلل وبالبيانات المتاحة له:</p>
         {dupes.map((d) => (
           <>
             <h3><a href={withBase(`orgs/${idOf(d)}/`)}>{d.org}</a>: حللها {d.sources.length === 3 ? 'ثلاثة زملاء' : 'زميلان'}</h3>

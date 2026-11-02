@@ -38,9 +38,9 @@ const flags = [
       </section>
       <section class="rsec">
         <h2><span class="n">4</span> المحاور والأنماط</h2>
-        <div class="tablewrap"><table class="rt">
+        <div class="tablewrap"><table class="rt stack2">
           <thead><tr><th>المحور</th><th>الأنماط</th></tr></thead>
-          <tbody>{CATS.map((c) => <tr><td style="white-space:nowrap"><b>{c.name}</b></td><td>{PATTERNS.filter((p) => p.cat === c.code).map((p, i) => <>{i ? ' · ' : ''}<a href={withBase(`patterns/${p.code}/`)}>{p.name}</a></>)}</td></tr>)}</tbody>
+          <tbody>{CATS.map((c) => <tr><td class="k"><b>{c.name}</b></td><td>{PATTERNS.filter((p) => p.cat === c.code).map((p, i) => <>{i ? ' · ' : ''}<a href={withBase(`patterns/${p.code}/`)}>{p.name}</a></>)}</td></tr>)}</tbody>
         </table></div>
       </section>
       <section class="rsec">
